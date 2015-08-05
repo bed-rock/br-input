@@ -7,7 +7,7 @@
   <template> 
     <div class="form_field">
       <label for="{{name}}">{{label}}</label>
-      <input type="text" id="{{name}}" on-keyup='_onKeyPress'>
+      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress'>
     </div>
   </template>
 
@@ -38,7 +38,15 @@
         model: {
           type: String,
           notify: true
-        }
+        },
+        isValid: {
+          type: Boolean,
+          default: true
+        },
+        required: {
+          type: Boolean,
+          default: false
+        },
       },
 
       /* -- Lifecycle ------------------------------------------------- */
@@ -102,9 +110,36 @@
         input.parentElement.children[0].classList.add('active');
 
         if(input.value.length === 0)
-        input.parentElement.children[0].classList.remove('active');
+          input.parentElement.children[0].classList.remove('active');
 
         this.model = e.target.value;
+
+      },
+
+      _validate: function(){
+
+        var input = document.getElementById(this.name);
+
+        this._validateNotEmpty(input);
+
+        this._validateCustomValidator(input);
+      },
+
+      _validateNotEmpty: function(input) { 
+
+        if(this.required && input.value.length === 0)
+          this.isValid = false; 
+        else
+          this.isValid = true;
+      },
+
+      _validateCustomValidator: function(input) {
+
+        if(!this.isValid)
+          input.classList.add('error');        
+        else
+          input.classList.remove('error');
+        
 
       },
 
