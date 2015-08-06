@@ -7,7 +7,11 @@
   <template> 
     <div class="form_field">
       <label for="{{name}}">{{label}}</label>
-      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress'>
+      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress'>      
+      <template is="dom-if" if="{{hasNotEmptyError}}"><p>{{notEmptyErrorMessage}}</p></template>
+      <template is="dom-if" if="{{hasMinLengthError}}"><p>{{minLengthErrorMessage}}</p></template>
+      <template is="dom-if" if="{{hasMaxLengthError}}" ><p>{{maxLengthErrorMessage}}</p></template>
+      <template is="dom-if" if="{{hasCustomError}}"><p>{{customErrorMessage}}</p></template>
     </div>
   </template>
 
@@ -38,13 +42,39 @@
         model: {
           type: String,
           notify: true
+        },      
+        required: {
+          type: Boolean,
+          default: false
         },
         isValid: {
           type: Boolean,
           default: true
         },
-        required: {
+        min: Number,
+        max: Number,
+        notEmptyErrorMessage: String,
+        minLengthErrorMessage: String,
+        maxLengthErrorMessage: String,
+        customErrorMessage: String,
+        hasNotEmptyError: {
           type: Boolean,
+          readOnly: true,
+          default: false
+        },
+        hasMinLengthError: {
+          type: Boolean,
+          readOnly: true,
+          default: false
+        },
+        hasMaxLengthError: {
+          type: Boolean,
+          readOnly: true,          
+          default: false
+        },
+        hasCustomError: {
+          type: Boolean,
+          readOnly: true,
           default: false
         },
       },
@@ -114,33 +144,70 @@
 
         this.model = e.target.value;
 
+        this._defaultValidation();
       },
 
       _validate: function(){
+
+        this._defaultValidation();
+        this._customValidation();
+
+      },
+
+      _defaultValidation: function(){
 
         var input = document.getElementById(this.name);
 
         this._validateNotEmpty(input);
 
-        this._validateCustomValidator(input);
+        this._validateMinLength(input);
+
+        this._validateMaxLength(input);
+        
+      },
+
+      _customValidation: function() {
+
+        var input = document.getElementById(this.name);
+
+        if(!this.isValid){
+          input.classList.add('error');
+          this._setHasCustomError(true);
+        }
+        else{
+          input.classList.remove('error');       
+          this._setHasCustomError(false);
+        }
+
       },
 
       _validateNotEmpty: function(input) { 
 
         if(this.required && input.value.length === 0)
-          this.isValid = false; 
+          this._setHasNotEmptyError(true);        
         else
-          this.isValid = true;
+          this._setHasNotEmptyError(false);
+        
       },
 
-      _validateCustomValidator: function(input) {
+      _validateMaxLength: function(input){
+           //validates maxlength
+           if((this.format.toUpperCase() === this.formats.NUMBER 
+            || this.format.toUpperCase() === this.formats.TEXT)
+            &&  input.value.length > this.max)
+            this._setHasMaxLengthError(true);
+          else
+            this._setHasMaxLengthError(false);
+        },
 
-        if(!this.isValid)
-          input.classList.add('error');        
+      _validateMinLength: function(input){
+         //validates minLength
+         if((this.format.toUpperCase() === this.formats.NUMBER 
+          || this.format.toUpperCase() === this.formats.TEXT)
+          &&  input.value.length < this.min)
+          this._setHasMinLengthError(true);
         else
-          input.classList.remove('error');
-        
-
+          this._setHasMinLengthError(false);
       },
 
      /* -- Public Methods -------------------------------------------- */

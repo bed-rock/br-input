@@ -14,8 +14,15 @@
 				<br-input 
 					name="teste" 
 					label="Teste" 
-					format="text" 
+					format="number" 
 					model="{{value}}"
+					is-valid="false"
+					min="3"
+					max="5"
+					not-empty-error-message="Não pode ficar em branco"
+					min-length-error-message="Min error"
+					max-length-error-message="Max error"
+					custom-error-message="Custom error"
 					required					
 				></br-input>
 			</div>
