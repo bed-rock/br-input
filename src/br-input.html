@@ -8,10 +8,10 @@
     <div class="form_field">
       <label for="{{name}}">{{label}}</label>
       <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress'>      
-      <template is="dom-if" if="{{hasNotEmptyError}}"><p>{{notEmptyErrorMessage}}</p></template>
-      <template is="dom-if" if="{{hasMinLengthError}}"><p>{{minLengthErrorMessage}}</p></template>
-      <template is="dom-if" if="{{hasMaxLengthError}}" ><p>{{maxLengthErrorMessage}}</p></template>
-      <template is="dom-if" if="{{hasCustomError}}"><p>{{customErrorMessage}}</p></template>
+      <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
+      <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
+      <template is="dom-if" if="{{hasMaxLengthError}}" ><p class="form_field--error">{{maxLengthErrorMessage}}</p></template>
+      <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
     </div>
   </template>
 
@@ -156,7 +156,8 @@
 
       _defaultValidation: function(){
 
-        var input = document.getElementById(this.name);
+        var formField = document.querySelector('.form_field');
+        var input = document.getElementById(this.name);        
 
         this._validateNotEmpty(input);
 
@@ -164,15 +165,20 @@
 
         this._validateMaxLength(input);
 
-        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError)
+        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError){
           input.classList.add('error');
-        else
+          formField.classList.add('is-invalid');
+        }
+        else{
           input.classList.remove('error');
+          formField.classList.remove('is-invalid');
+        }
         
       },
 
       _customValidation: function() {
 
+        var formField = document.querySelector('.form_field');
         var input = document.getElementById(this.name);
 
         
@@ -181,10 +187,14 @@
         else
           this._setHasCustomError(true);
 
-        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError)
+        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError){
           input.classList.add('error');
-        else
+          formField.classList.add('is-invalid');
+        }
+        else{
           input.classList.remove('error');
+          formField.classList.remove('is-invalid');
+        }
 
       },
 
