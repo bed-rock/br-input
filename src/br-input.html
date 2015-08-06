@@ -7,10 +7,9 @@
   <template> 
     <div class="form_field">
       <label for="{{name}}">{{label}}</label>
-      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress'>      
+      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
-      <template is="dom-if" if="{{hasMaxLengthError}}" ><p class="form_field--error">{{maxLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
     </div>
   </template>
@@ -55,7 +54,6 @@
         max: Number,
         notEmptyErrorMessage: String,
         minLengthErrorMessage: String,
-        maxLengthErrorMessage: String,
         customErrorMessage: String,
         hasNotEmptyError: {
           type: Boolean,
@@ -66,12 +64,7 @@
           type: Boolean,
           readOnly: true,
           default: false
-        },
-        hasMaxLengthError: {
-          type: Boolean,
-          readOnly: true,          
-          default: false
-        },
+        },     
         hasCustomError: {
           type: Boolean,
           readOnly: true,
@@ -163,9 +156,7 @@
 
         this._validateMinLength(input);
 
-        this._validateMaxLength(input);
-
-        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError){
+        if(this.hasMinLengthError ||  this.hasCustomError){
           input.classList.add('error');
           formField.classList.add('is-invalid');
         }
@@ -187,7 +178,7 @@
         else
           this._setHasCustomError(true);
 
-        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError){
+        if(this.hasMinLengthError || this.hasCustomError){
           input.classList.add('error');
           formField.classList.add('is-invalid');
         }
@@ -218,19 +209,7 @@
         else
           this._setHasMinLengthError(false);
       },
-
-      _validateMaxLength: function(input){
-        
-        if((this.format.toUpperCase() === this.formats.NUMBER  
-            || this.format.toUpperCase() === this.formats.TEXT)
-            &&  input.value.length > this.max)
-        {
-          this._setHasMaxLengthError(true);
-        }
-        else
-          this._setHasMaxLengthError(false);
-     },
- 
+   
 
      /* -- Public Methods -------------------------------------------- */
 
