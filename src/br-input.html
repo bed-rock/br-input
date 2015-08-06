@@ -163,6 +163,11 @@
         this._validateMinLength(input);
 
         this._validateMaxLength(input);
+
+        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError)
+          input.classList.add('error');
+        else
+          input.classList.remove('error');
         
       },
 
@@ -170,14 +175,16 @@
 
         var input = document.getElementById(this.name);
 
-        if(!this.isValid){
-          input.classList.add('error');
-          this._setHasCustomError(true);
-        }
-        else{
-          input.classList.remove('error');       
+        
+        if(this.isValid)
           this._setHasCustomError(false);
-        }
+        else
+          this._setHasCustomError(true);
+
+        if(this.hasMinLengthError || this.hasMaxLengthError || this.hasCustomError)
+          input.classList.add('error');
+        else
+          input.classList.remove('error');
 
       },
 
@@ -190,25 +197,30 @@
         
       },
 
-      _validateMaxLength: function(input){
-           //validates maxlength
-           if((this.format.toUpperCase() === this.formats.NUMBER 
-            || this.format.toUpperCase() === this.formats.TEXT)
-            &&  input.value.length > this.max)
-            this._setHasMaxLengthError(true);
-          else
-            this._setHasMaxLengthError(false);
-        },
-
       _validateMinLength: function(input){
-         //validates minLength
-         if((this.format.toUpperCase() === this.formats.NUMBER 
+
+        if((this.format.toUpperCase() === this.formats.NUMBER  
           || this.format.toUpperCase() === this.formats.TEXT)
           &&  input.value.length < this.min)
-          this._setHasMinLengthError(true);
+        {
+          this._setHasMinLengthError(true);          
+        } 
         else
           this._setHasMinLengthError(false);
       },
+
+      _validateMaxLength: function(input){
+        
+        if((this.format.toUpperCase() === this.formats.NUMBER  
+            || this.format.toUpperCase() === this.formats.TEXT)
+            &&  input.value.length > this.max)
+        {
+          this._setHasMaxLengthError(true);
+        }
+        else
+          this._setHasMaxLengthError(false);
+     },
+ 
 
      /* -- Public Methods -------------------------------------------- */
 
