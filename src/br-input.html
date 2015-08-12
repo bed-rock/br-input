@@ -1,13 +1,17 @@
 <link rel="import" type="html" href="../../polymer/polymer.html">
+<link rel="import" href="../../br-icons/src/br-icons.html">
 
 <dom-module id="br-input">
 
   <script src="../../vanilla-masker/vanilla-masker.min.js"></script>
 
-  <template> 
-    <div class="form_field">
+  <template>
+    <div class="form_field" required$="{{required}}">
+      <template is="dom-if" if="{{icon}}">
+        <br-icons icon$="{{icon}}" class="icon"></br-icons>
+      </template>
       <label for="{{name}}">{{label}}</label>
-      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}">
+      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -15,13 +19,14 @@
   </template>
 
   <script>
-    
+
     Polymer({
       is: 'br-input',
       properties: {
-        
+
         name: String,
         format: String,
+        icon: String,
         options: {
           type: Object,
           value: {}
@@ -41,7 +46,7 @@
         model: {
           type: String,
           notify: true
-        },      
+        },
         required: {
           type: Boolean,
           default: false
@@ -64,7 +69,7 @@
           type: Boolean,
           readOnly: true,
           default: false
-        },     
+        },
         hasCustomError: {
           type: Boolean,
           readOnly: true,
@@ -74,12 +79,12 @@
 
       /* -- Lifecycle ------------------------------------------------- */
 
-      ready: function(){  
-        this._setInputMask();  
+      ready: function(){
+        this._setInputMask();
       },
 
       /* -- Private Methods ------------------------------------------- */
-    
+
       _setInputMask: function(){
 
          var inputName = document.getElementById(this.name);
@@ -129,11 +134,11 @@
 
       _onKeyPress: function(e){
 
-        var input = document.getElementById(this.name);
-        input.parentElement.children[0].classList.add('active');
+        var input = this.$$('#'+this.name);
+        input.parentElement.classList.add('active');
 
         if(input.value.length === 0)
-          input.parentElement.children[0].classList.remove('active');
+          input.parentElement.classList.remove('active');
 
         this.model = e.target.value;
 
@@ -149,67 +154,61 @@
 
       _defaultValidation: function(){
 
-        var formField = document.querySelector('.form_field');
-        var input = document.getElementById(this.name);        
+        var formField = this.$$('.form_field');
+        var input = this.$$('#'+this.name);
 
         this._validateNotEmpty(input);
 
         this._validateMinLength(input);
 
         if(this.hasMinLengthError ||  this.hasCustomError){
-          input.classList.add('error');
           formField.classList.add('is-invalid');
         }
         else{
-          input.classList.remove('error');
           formField.classList.remove('is-invalid');
         }
-        
+
       },
 
       _customValidation: function() {
 
-        var formField = document.querySelector('.form_field');
-        var input = document.getElementById(this.name);
+        var formField = this.$$('.form_field');
 
-        
         if(this.isValid)
           this._setHasCustomError(false);
         else
           this._setHasCustomError(true);
 
         if(this.hasMinLengthError || this.hasCustomError){
-          input.classList.add('error');
           formField.classList.add('is-invalid');
         }
         else{
-          input.classList.remove('error');
           formField.classList.remove('is-invalid');
         }
 
       },
 
-      _validateNotEmpty: function(input) { 
+      _validateNotEmpty: function(input) {
 
         if(this.required && input.value.length === 0)
-          this._setHasNotEmptyError(true);        
+          this._setHasNotEmptyError(true);
         else
           this._setHasNotEmptyError(false);
-        
+
       },
 
       _validateMinLength: function(input){
 
-        if((this.format.toUpperCase() === this.formats.NUMBER  
+        if((this.format.toUpperCase() === this.formats.NUMBER
           || this.format.toUpperCase() === this.formats.TEXT)
           &&  input.value.length < this.min)
         {
-          this._setHasMinLengthError(true);          
-        } 
+          this._setHasMinLengthError(true);
+        }
         else
           this._setHasMinLengthError(false);
       },
-   
+
 
      /* -- Public Methods -------------------------------------------- */
 
