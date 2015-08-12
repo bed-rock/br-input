@@ -1,5 +1,5 @@
 <link rel="import" type="html" href="../../polymer/polymer.html">
-<link rel="import" href="../../br-icons/src/br-icons.html">
+<link rel="import" type="html" href="../../br-icons/src/br-icons.html">
 
 <dom-module id="br-input">
 
@@ -10,8 +10,8 @@
       <template is="dom-if" if="{{icon}}">
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
-      <label for="{{name}}">{{label}}</label>
-      <input type="text" id="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}">
+      <label for$="{{name}}">{{label}}</label>
+      <input type="text" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -79,15 +79,15 @@
 
       /* -- Lifecycle ------------------------------------------------- */
 
-      ready: function(){
+      ready: function() {
         this._setInputMask();
       },
 
       /* -- Private Methods ------------------------------------------- */
 
-      _setInputMask: function(){
+      _setInputMask: function() {
 
-         var inputName = document.getElementById(this.name);
+         var inputName = this.$$('input');
 
          switch(this.format.toUpperCase())
          {
@@ -112,79 +112,75 @@
         }
       },
 
-      _toNumber: function(inputName){
+      _toNumber: function(inputName) {
         VMasker(inputName).maskNumber();
       },
 
-      _toMoney: function(inputName, options){
+      _toMoney: function(inputName, options) {
         VMasker(inputName).maskMoney(options);
       },
 
-      _toDateMonth: function(inputName){
+      _toDateMonth: function(inputName) {
         VMasker(inputName).maskPattern("99/9999");
       },
 
-      _toCpf: function(inputName){
+      _toCpf: function(inputName) {
         VMasker(inputName).maskPattern("999.999.999-99");
       },
 
-      _toCnpj: function(inputName){
+      _toCnpj: function(inputName) {
         VMasker(inputName).maskPattern("99.999.999/9999-99");
       },
 
-      _onKeyPress: function(e){
+      _onKeyPress: function(e) {
 
-        var input = this.$$('#'+this.name);
-        input.parentElement.classList.add('active');
+        this.$$('.form_field').classList.add('active');
+
+        var input = this.$$('input');
 
         if(input.value.length === 0)
-          input.parentElement.classList.remove('active');
+          this.$$('.form_field').classList.remove('active');
 
         this.model = e.target.value;
 
         this._defaultValidation();
       },
 
-      _validate: function(){
-
+      _validate: function() {
         this._defaultValidation();
         this._customValidation();
-
       },
 
-      _defaultValidation: function(){
+      _defaultValidation: function() {
 
-        var formField = this.$$('.form_field');
-        var input = this.$$('#'+this.name);
+        var input = this.$$('input');
 
         this._validateNotEmpty(input);
 
         this._validateMinLength(input);
 
-        if(this.hasMinLengthError ||  this.hasCustomError){
+        var formField = this.$$('.form_field');
+
+        if (this.hasMinLengthError ||  this.hasCustomError)
           formField.classList.add('is-invalid');
-        }
-        else{
+        else
           formField.classList.remove('is-invalid');
-        }
 
       },
 
       _customValidation: function() {
 
-        var formField = this.$$('.form_field');
-
-        if(this.isValid)
+        if (this.isValid)
           this._setHasCustomError(false);
         else
           this._setHasCustomError(true);
 
-        if(this.hasMinLengthError || this.hasCustomError){
+        var formField = this.$$('.form_field');
+
+        if (this.hasMinLengthError || this.hasCustomError)
           formField.classList.add('is-invalid');
-        }
-        else{
+        else
           formField.classList.remove('is-invalid');
-        }
 
       },
 
@@ -197,9 +193,9 @@
 
       },
 
-      _validateMinLength: function(input){
+      _validateMinLength: function(input) {
 
-        if((this.format.toUpperCase() === this.formats.NUMBER
+        if ((this.format.toUpperCase() === this.formats.NUMBER
           || this.format.toUpperCase() === this.formats.TEXT)
           &&  input.value.length < this.min)
         {
