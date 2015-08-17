@@ -51,10 +51,7 @@
           type: Boolean,
           default: false
         },
-        isValid: {
-          type: Boolean,
-          default: true
-        },
+        isValid: String,
         min: Number,
         max: Number,
         notEmptyErrorMessage: String,
@@ -161,10 +158,12 @@
 
         var formField = this.$$('.form_field');
 
-        if (this.hasMinLengthError ||  this.hasCustomError)
+        if (this.hasMinLengthError ||  this.hasCustomError){
           formField.classList.add('is-invalid');
-        else
+          this.isValid = 'true';}
+        else{
           formField.classList.remove('is-invalid');
+        }
 
       },
 
@@ -177,10 +176,12 @@
 
         var formField = this.$$('.form_field');
 
-        if (this.hasMinLengthError || this.hasCustomError)
+        if (this.hasMinLengthError || this.hasCustomError){
           formField.classList.add('is-invalid');
-        else
+          this.isValid = 'true';}
+        else{
           formField.classList.remove('is-invalid');
+        }
 
       },
 
