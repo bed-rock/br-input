@@ -51,7 +51,10 @@
           type: Boolean,
           default: false
         },
-        isValid: String,
+        isValid: {
+          type: Boolean,
+          default: false
+        },
         min: Number,
         max: Number,
         notEmptyErrorMessage: String,
@@ -160,9 +163,10 @@
 
         if (this.hasMinLengthError ||  this.hasCustomError){
           formField.classList.add('is-invalid');
-          this.isValid = 'true';}
+          }
         else{
           formField.classList.remove('is-invalid');
+          this.isValid = true;
         }
 
       },
@@ -178,9 +182,10 @@
 
         if (this.hasMinLengthError || this.hasCustomError){
           formField.classList.add('is-invalid');
-          this.isValid = 'true';}
+          }
         else{
           formField.classList.remove('is-invalid');
+          this.isValid = true;
         }
 
       },
