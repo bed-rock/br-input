@@ -1,6 +1,6 @@
 {
   "name": "br-input",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/bed-rock/br-input",
   "authors": [
     "cbfranca <cleidsonbf@gmail.com>",
@@ -26,6 +26,6 @@
   ],
   "dependencies" : {
     "bedrock-base": "~1.0.0",
-    "vanilla-masker": "~1.0.9"
+    "vanilla-masker": "~1.1.0"
   }
 }
