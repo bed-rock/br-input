@@ -18,7 +18,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input type="text" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
+      <input type$="{{type}}" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -32,7 +32,14 @@
       properties: {
 
         name: String,
-        format: String,
+        format: {
+          type: String,
+          value: "text"
+        },
+        type: {
+          type: String,
+          value: "text"
+        },
         icon: String,
         options: {
           type: Object,
