@@ -18,7 +18,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input type="text" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}">
+      <input type="text" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -56,11 +56,11 @@
         },
         required: {
           type: Boolean,
-          default: false
+          value: false
         },
         isValid: {
-          type: Boolean,
-          default: false
+          type: String,
+          value: "true"
         },
         min: Number,
         max: Number,
@@ -70,17 +70,17 @@
         hasNotEmptyError: {
           type: Boolean,
           readOnly: true,
-          default: false
+          value: false
         },
         hasMinLengthError: {
           type: Boolean,
           readOnly: true,
-          default: false
+          value: false
         },
         hasCustomError: {
           type: Boolean,
           readOnly: true,
-          default: false
+          value: false
         },
       },
 
@@ -164,46 +164,46 @@
 
         this._validateNotEmpty(input);
 
-        this._validateMinLength(input);
+        if(this.min !== undefined)
+          this._validateMinLength(input);
 
-        var formField = this.$$('.form_field');
+        // var formField = this.$$('.form_field');
 
-        if (this.hasMinLengthError ||  this.hasCustomError){
-          formField.classList.add('is-invalid');
-          }
-        else{
-          formField.classList.remove('is-invalid');
-          this.isValid = true;
-        }
+        // if (this.hasMinLengthError ||  this.hasCustomError){
+        //   formField.classList.add('is-invalid');
+        //   }
+        // else{
+        //   formField.classList.remove('is-invalid');
+        //   this.isValid = true;
+        // }
 
       },
 
       _customValidation: function() {
-
-        if (this.isValid)
+        
+        if (this.isValid === "true")
           this._setHasCustomError(false);
         else
           this._setHasCustomError(true);
 
         var formField = this.$$('.form_field');
 
-        if (this.hasMinLengthError || this.hasCustomError){
+        if (this.hasMinLengthError || this.hasCustomError || this.hasNotEmptyError){        
           formField.classList.add('is-invalid');
-          }
+        }
         else{
           formField.classList.remove('is-invalid');
-          this.isValid = true;
+          this.isValid = "true";
         }
 
       },
 
       _validateNotEmpty: function(input) {
-
+      
         if(this.required && input.value.length === 0)
           this._setHasNotEmptyError(true);
         else
           this._setHasNotEmptyError(false);
-
       },
 
       _validateMinLength: function(input) {
