@@ -3,11 +3,28 @@
 <head>
 	<meta charset="UTF-8">
 	<title></title>
+	<link rel="import" type="html" href="../../polymer/polymer.html">
 	<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 	<link rel="stylesheet" href="../../bedrock/dist/css/style.css">
 	<link rel="import" href="../src/br-input.html">
 </head>
 <body>
+
+<!--
+Usage:
+Tag: <br-input>< /br-input>
+Attributes:
+	Name: String
+	Label: String
+	Model: 'SomeValue'?
+	Min, max: Defines min/max field's caracthers
+	is-valid: String true or false (why?)
+	not-empty-error-message: String
+	min-length-error-message: String
+	custom-error-message: String
+	required: Used makes the field required
+-->
+
 	<br><br>
 	<div class="container">
 		<h1>br-input <small>example</small></h1>
