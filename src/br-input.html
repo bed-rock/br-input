@@ -1,11 +1,13 @@
-<link rel="import" type="html" href="../../polymer/polymer.html">
 <link rel="import" type="html" href="../../br-icons/src/br-icons.html">
 
 <dom-module id="br-input">
 
   <style>
     :host {
-      display: flex;
+      display: block;
+      width: 100%;
+    }
+    .form_field{
       width: 100%;
     }
   </style>
@@ -18,7 +20,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input type$="{{type}}" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
+      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -187,7 +189,7 @@
       },
 
       _customValidation: function() {
-        
+
         if (this.isValid === "true")
           this._setHasCustomError(false);
         else
@@ -195,7 +197,7 @@
 
         var formField = this.$$('.form_field');
 
-        if (this.hasMinLengthError || this.hasCustomError || this.hasNotEmptyError){        
+        if (this.hasMinLengthError || this.hasCustomError || this.hasNotEmptyError){
           formField.classList.add('is-invalid');
         }
         else{
@@ -206,7 +208,7 @@
       },
 
       _validateNotEmpty: function(input) {
-      
+
         if(this.required && input.value.length === 0)
           this._setHasNotEmptyError(true);
         else
