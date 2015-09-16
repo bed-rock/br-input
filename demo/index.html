@@ -22,6 +22,7 @@ Attributes:
 	not-empty-error-message: String
 	min-length-error-message: String
 	custom-error-message: String
+	format: text, date, datemonth, money, cpf, cnpj
 	required: Used makes the field required
 -->
 
@@ -33,7 +34,7 @@ Attributes:
 				<br-input
 				name="username"
 				label="Input with icon"
-				format="text"
+				format="date"
 				model="{{value}}"
 				max="14"
 				is-valid="true"

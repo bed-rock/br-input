@@ -54,6 +54,7 @@
             TEXT: 'TEXT',
             NUMBER: 'NUMBER',
             MONEY: 'MONEY',
+            DATE: 'DATE',
             DATEMONTH: 'DATEMONTH',
             CPF: 'CPF',
             CNPJ: 'CNPJ'
@@ -104,6 +105,9 @@
           case this.formats.MONEY:
             this._toMoney(inputName, this.options);
             break;
+          case this.formats.DATE:
+            this._toDate(inputName);
+            break;
           case this.formats.DATEMONTH:
             this._toDateMonth(inputName);
             break;
@@ -129,6 +133,10 @@
 
       _toDateMonth: function(inputName) {
         VMasker(inputName).maskPattern("99/9999");
+      },
+
+      _toDate: function(inputName) {
+        VMasker(inputName).maskPattern("99/99/9999");
       },
 
       _toCpf: function(inputName) {
