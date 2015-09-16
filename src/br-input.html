@@ -20,7 +20,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-keyup='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
+      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-input='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -71,31 +71,22 @@
           type: String,
           value: "true"
         },
+        
         min: Number,
         max: Number,
+        
         notEmptyErrorMessage: String,
         minLengthErrorMessage: String,
         customErrorMessage: String,
-        hasNotEmptyError: {
-          type: Boolean,
-          readOnly: true,
-          value: false
-        },
-        hasMinLengthError: {
-          type: Boolean,
-          readOnly: true,
-          value: false
-        },
-        hasCustomError: {
-          type: Boolean,
-          readOnly: true,
-          value: false
-        },
       },
 
       /* -- Lifecycle ------------------------------------------------- */
 
       ready: function() {
+        this.hasNotEmptyError = false;
+        this.hasMinLengthError = false;
+        this.hasCustomError = false;
+
         this._setInputMask();
       },
 
@@ -160,11 +151,13 @@
         this.model = e.target.value;
 
         this._defaultValidation();
+        this._validate();
       },
 
       _validate: function() {
-        this._defaultValidation();
+        
         this._customValidation();
+        this._defaultValidation();                
       },
 
       _defaultValidation: function() {
@@ -175,56 +168,51 @@
 
         if(this.min !== undefined)
           this._validateMinLength(input);
-
-        // var formField = this.$$('.form_field');
-
-        // if (this.hasMinLengthError ||  this.hasCustomError){
-        //   formField.classList.add('is-invalid');
-        //   }
-        // else{
-        //   formField.classList.remove('is-invalid');
-        //   this.isValid = true;
-        // }
-
       },
 
       _customValidation: function() {
-
-        if (this.isValid === "true")
-          this._setHasCustomError(false);
-        else
-          this._setHasCustomError(true);
-
+        
         var formField = this.$$('.form_field');
 
-        if (this.hasMinLengthError || this.hasCustomError || this.hasNotEmptyError){
-          formField.classList.add('is-invalid');
+        if (this.isValid === "true"){
+          this.hasCustomError = false;
+          formField.classList.remove('is-invalid');
         }
         else{
-          formField.classList.remove('is-invalid');
-          this.isValid = "true";
+          this.hasCustomError = true;
+          formField.classList.add('is-invalid');
         }
-
       },
 
       _validateNotEmpty: function(input) {
 
-        if(this.required && input.value.length === 0)
-          this._setHasNotEmptyError(true);
-        else
-          this._setHasNotEmptyError(false);
+        var formField = this.$$('.form_field');
+
+        if(this.required && input.value.length === 0){
+          this.hasNotEmptyError = true;
+          formField.classList.add('is-invalid');
+        }
+        else{
+          this.hasNotEmptyError = false;          
+          formField.classList.remove('is-invalid');
+        }
       },
 
       _validateMinLength: function(input) {
+
+        var formField = this.$$('.form_field');
 
         if ((this.format.toUpperCase() === this.formats.NUMBER
           || this.format.toUpperCase() === this.formats.TEXT)
           &&  input.value.length < this.min)
         {
-          this._setHasMinLengthError(true);
+          this.hasMinLengthError = true;
+          formField.classList.add('is-invalid');          
         }
-        else
-          this._setHasMinLengthError(false);
+        else{
+          this.hasMinLengthError = false;
+          formField.classList.remove('is-invalid');
+        }
       },
 
 
