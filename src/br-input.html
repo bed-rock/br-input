@@ -10,7 +10,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-input='_onKeyPress' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
+      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-input='_onKeyPress' on-click='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -18,7 +18,6 @@
   </template>
 
   <script>
-
     Polymer({
       is: 'br-input',
       properties: {
@@ -62,10 +61,8 @@
           type: String,
           value: "true"
         },
-
         min: Number,
         max: Number,
-
         notEmptyErrorMessage: String,
         minLengthErrorMessage: String,
         customErrorMessage: String,
@@ -139,24 +136,22 @@
       },
 
       _onKeyPress: function(e) {
-
-        this.$$('.form_field').classList.add('active');
-
-        var input = this.$$('input');
-
-        if(input.value.length === 0)
-          this.$$('.form_field').classList.remove('active');
-
         this.model = e.target.value;
-
         this._defaultValidation();
         this._validate();
       },
 
-      _validate: function() {
+      _activeField: function(){
+        this.$$('.form_field').classList.add('active');
+      },
 
+      _validate: function() {
         this._customValidation();
         this._defaultValidation();
+
+        var input = this.$$('input');
+        if(input.value.length === 0)
+          this.$$('.form_field').classList.remove('active');
       },
 
       _defaultValidation: function() {
