@@ -87,6 +87,7 @@
         this.hasNotEmptyError = false;
         this.hasMinLengthError = false;
         this.hasCustomError = false;
+        this.isValidForm = false;
 
         this._setInputMask();
       },
@@ -184,10 +185,12 @@
 
         if (this.isValid === "true"){
           this.hasCustomError = false;
+          this.isValidForm = true;
           formField.classList.remove('is-invalid');
         }
         else{
           this.hasCustomError = true;
+          this.isValidForm = false;
           formField.classList.add('is-invalid');
         }
       },
@@ -198,10 +201,12 @@
 
         if(this.required && input.value.length === 0){
           this.hasNotEmptyError = true;
+          this.isValidForm = false;
           formField.classList.add('is-invalid');
         }
         else{
-          this.hasNotEmptyError = false;          
+          this.hasNotEmptyError = false;
+          this.isValidForm = true;
           formField.classList.remove('is-invalid');
         }
       },
@@ -215,10 +220,12 @@
           &&  input.value.length < this.min)
         {
           this.hasMinLengthError = true;
+          this.isValidForm = false;
           formField.classList.add('is-invalid');          
         }
         else{
           this.hasMinLengthError = false;
+          this.isValidForm = true;
           formField.classList.remove('is-invalid');
         }
       },
