@@ -2,16 +2,6 @@
 
 <dom-module id="br-input">
 
-  <style>
-    :host {
-      display: block;
-      width: 100%;
-    }
-    .form_field{
-      width: 100%;
-    }
-  </style>
-
   <script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
 
   <template>
@@ -72,10 +62,10 @@
           type: String,
           value: "true"
         },
-        
+
         min: Number,
         max: Number,
-        
+
         notEmptyErrorMessage: String,
         minLengthErrorMessage: String,
         customErrorMessage: String,
@@ -164,9 +154,9 @@
       },
 
       _validate: function() {
-        
+
         this._customValidation();
-        this._defaultValidation();                
+        this._defaultValidation();
       },
 
       _defaultValidation: function() {
@@ -180,7 +170,7 @@
       },
 
       _customValidation: function() {
-        
+
         var formField = this.$$('.form_field');
 
         if (this.isValid === "true"){
@@ -221,7 +211,7 @@
         {
           this.hasMinLengthError = true;
           this.isValidForm = false;
-          formField.classList.add('is-invalid');          
+          formField.classList.add('is-invalid');
         }
         else{
           this.hasMinLengthError = false;
