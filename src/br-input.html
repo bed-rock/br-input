@@ -10,7 +10,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-input='_onKeyPress' on-click='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
+      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-input='_onKeyPress' on-focus='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
