@@ -10,7 +10,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input autocorrect="off" autocapitalize="off" type$="{{type}}" id$="{{name}}" on-blur="_validate" on-input='_onKeyPress' on-focus='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
+      <input type$="{{type}}" id$="{{name}}" autocorrect="off" autocapitalize="off" value$="{{hostValue}}" on-blur="_validate" on-input='_onInput' on-focus='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -45,6 +45,7 @@
             MONEY: 'MONEY',
             DATE: 'DATE',
             DATEMONTH: 'DATEMONTH',
+            PHONE: 'PHONE',
             CPF: 'CPF',
             CNPJ: 'CNPJ'
           }
@@ -53,6 +54,7 @@
           type: String,
           reflectToAttribute: true
         },
+        brValue: String,
         required: {
           type: Boolean,
           value: false
@@ -75,6 +77,13 @@
         this.hasMinLengthError = false;
         this.hasCustomError = false;
         this.isValidForm = false;
+
+        // if(this.model && this.model.indexOf('{{') === -1)
+        //   this._activeField();
+        // else
+        //   this.value = '';
+
+        console.log(this.hostValue);
 
         this._setInputMask();
       },
@@ -105,9 +114,11 @@
           case this.formats.CNPJ:
             this._toCnpj(inputName);
             break;
+          case this.formats.PHONE:
+            this._toPhone(inputName);
+            break;
           default:
             break;
-
         }
       },
 
@@ -135,14 +146,23 @@
         VMasker(inputName).maskPattern("99.999.999/9999-99");
       },
 
-      _onKeyPress: function(e) {
-        this.model = e.target.value;
+       _toPhone: function(inputName) {
+        VMasker(inputName).maskPattern("(99) 99999-9999");
+      },
+
+      _onInput: function(e) {       
+        
+        this._activeField();        
+        this.model = e.target.value;                
         this._defaultValidation();
         this._validate();
       },
 
       _activeField: function(){
-        this.$$('.form_field').classList.add('active');
+        var formFieldClassList = this.$$('.form_field').classList;
+         
+        if(!formFieldClassList.contains('active'))
+          formFieldClassList.add('active');
       },
 
       _validate: function() {
