@@ -10,7 +10,7 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input type$="{{type}}" id$="{{name}}" autocorrect="off" autocapitalize="off" value$="{{hostValue}}" on-blur="_validate" on-input='_onInput' on-focus='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
+      <input type$="{{type}}" id$="{{name}}" autocorrect="off" autocapitalize="off" value$="{{model}}" on-blur="_validate" on-input='_onInput' on-focus='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
       <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
       <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
@@ -77,13 +77,6 @@
         this.hasMinLengthError = false;
         this.hasCustomError = false;
         this.isValidForm = false;
-
-        // if(this.model && this.model.indexOf('{{') === -1)
-        //   this._activeField();
-        // else
-        //   this.value = '';
-
-        console.log(this.hostValue);
 
         this._setInputMask();
       },
