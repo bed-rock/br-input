@@ -10,10 +10,26 @@
         <br-icons icon$="{{icon}}" class="icon"></br-icons>
       </template>
       <label for$="{{name}}">{{label}}</label>
-      <input type$="{{type}}" id$="{{name}}" autocorrect="off" autocapitalize="off" value$="{{model}}" on-blur="_validate" on-input='_onInput' on-focus='_activeField' maxlength$="{{max}}" required$="{{required}}" tabindex="0">
-      <template is="dom-if" if="{{hasNotEmptyError}}"><p class="form_field--error">{{notEmptyErrorMessage}}</p></template>
-      <template is="dom-if" if="{{hasMinLengthError}}"><p class="form_field--error">{{minLengthErrorMessage}}</p></template>
-      <template is="dom-if" if="{{hasCustomError}}"><p class="form_field--error">{{customErrorMessage}}</p></template>
+      <input type$="{{type}}"
+             id$="{{name}}"
+             autocorrect="off"
+             autocapitalize="off"
+             value$="{{model}}"
+             on-blur="_validateAndBindValue"
+             on-input='_onInput'
+             on-focus='_activeField'
+             maxlength$="{{max}}"
+             required$="{{required}}"
+             tabindex="0">
+      <template is="dom-if" if="{{hasNotEmptyError}}">
+        <p class="form_field--error">{{notEmptyErrorMessage}}</p>
+      </template>
+      <template is="dom-if" if="{{hasMinLengthError}}">
+        <p class="form_field--error">{{minLengthErrorMessage}}</p>
+      </template>
+      <template is="dom-if" if="{{hasCustomError}}">
+        <p class="form_field--error">{{customErrorMessage}}</p>
+      </template>
     </div>
   </template>
 
@@ -52,9 +68,9 @@
         },
         model: {
           type: String,
-          reflectToAttribute: true
+          reflectToAttribute: true,
+          observer: '_mask'
         },
-        brValue: String,
         required: {
           type: Boolean,
           value: false
@@ -73,12 +89,13 @@
       /* -- Lifecycle ------------------------------------------------- */
 
       ready: function() {
+
         this.hasNotEmptyError = false;
         this.hasMinLengthError = false;
         this.hasCustomError = false;
         this.isValidForm = false;
 
-        this._setInputMask();
+        this._setInputMask();        
       },
 
       /* -- Private Methods ------------------------------------------- */
@@ -143,17 +160,15 @@
         VMasker(inputName).maskPattern(" 99 99999-9999 ");
       },
 
-      _onInput: function(e) {       
-        
-        this._activeField();        
-        this.model = e.target.value;                
-        this._defaultValidation();
+      _onInput: function(e) {
+
+        this._activeField();
         this._validate();
       },
 
       _activeField: function(){
         var formFieldClassList = this.$$('.form_field').classList;
-         
+
         if(!formFieldClassList.contains('active'))
           formFieldClassList.add('active');
       },
@@ -227,6 +242,60 @@
           formField.classList.remove('is-invalid');
         }
       },
+
+      _validateAndBindValue: function(){
+        this._validate();
+        this._bindValue();
+      },
+
+      _bindValue: function() {
+        this.model = Polymer.dom(this.root).querySelector('#' + this.name).value;
+      },
+
+      _mask: function () {
+
+        var inputName = this.$$('input');
+
+        switch (this.format.toUpperCase()) {
+          //case this.formats.NUMBER:
+          //  this._toNumber(inputName);
+          //  break;
+          case this.formats.MONEY:
+            VMasker(inputName).unMask();
+            inputName.value = this.model;
+            this._toMoney(inputName, this.options);
+            break;
+          case this.formats.DATE:
+            VMasker(inputName).unMask();
+            inputName.value = this.model;
+            this._toDate(inputName);
+            break;
+          case this.formats.DATEMONTH:
+            VMasker(inputName).unMask();
+            inputName.value = this.model;
+            this._toDateMonth(inputName);
+            break;
+          case this.formats.CPF:
+            VMasker(inputName).unMask();
+            inputName.value = this.model;
+            this._toCpf(inputName);
+            break;
+          case this.formats.CNPJ:
+            VMasker(inputName).unMask();
+            inputName.value = this.model;
+            this._toCnpj(inputName);
+            break;
+          case this.formats.PHONE:
+            VMasker(inputName).unMask();
+            inputName.value = this.model;
+            this._toPhone(inputName);
+            break;
+          default:
+            break;
+        }
+
+        
+      }
 
 
      /* -- Public Methods -------------------------------------------- */
