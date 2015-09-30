@@ -17,6 +17,7 @@
              value$="{{model}}"
              on-blur="_validateAndBindValue"
              on-input='_onInput'
+             on-keydown='_onKeyDown'
              on-focus='_activeField'
              maxlength$="{{max}}"
              required$="{{required}}"
@@ -164,6 +165,11 @@
 
         this._activeField();
         this._validate();
+      },
+
+      _onKeyDown: function(e){
+        if(e.keyCode === 13)
+          this._bindValue();
       },
 
       _activeField: function(){
