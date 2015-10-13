@@ -96,7 +96,8 @@
         this.hasCustomError = false;
         this.isValidForm = false;
 
-        this._setInputMask();        
+        this._checkIfInputIsNull(this.model);
+        this._setInputMask();
       },
 
       /* -- Private Methods ------------------------------------------- */
@@ -130,6 +131,12 @@
             break;
           default:
             break;
+        }
+      },
+
+      _checkIfInputIsNull: function(value) {
+        if (!!value) {
+          this._activeField();
         }
       },
 
@@ -300,7 +307,7 @@
             break;
         }
 
-        
+
       }
 
 
