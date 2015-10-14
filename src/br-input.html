@@ -152,7 +152,7 @@
       },
 
       _toPhone: function ( inputName ) {
-        VMasker( inputName ).maskPattern( " 99 99999-9999 " );
+        VMasker( inputName ).maskPattern( "99 99999-9999" );
       },
 
       _onInput: function ( e ) {
@@ -256,7 +256,6 @@
             this._activeField();
             this._setValue();
             this._setInputMask();
-            this._validate();
           }
         } );
       }
