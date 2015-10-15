@@ -256,6 +256,9 @@
 
       _bindValue: function() {
         this.model = Polymer.dom(this.root).querySelector('#' + this.name).value;
+
+        if(this.format.toUpperCase() === this.formats.MONEY)
+          this.model = this.model.replace(/\./g, '').replace(',','.');
       },
 
       _mask: function () {
