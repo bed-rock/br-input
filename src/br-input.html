@@ -238,6 +238,7 @@
       },
 
       _validateAndBindValue: function () {
+        this.fire('on-br-input-blur');
         this._validate();
         this._setModel();
       },
