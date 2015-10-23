@@ -18,7 +18,8 @@
              on-focus='_activeField'
              maxlength$="{{max}}"
              required$="{{required}}"
-             tabindex="0">
+             tabindex="0"
+             ng-disabled$="{{disabled}}">
       <template is="dom-if" if="{{hasNotEmptyError}}">
         <p class="form_field--error">{{notEmptyErrorMessage}}</p>
       </template>
@@ -80,6 +81,7 @@
         notEmptyErrorMessage: String,
         minLengthErrorMessage: String,
         customErrorMessage: String,
+        disabled: String
       },
 
       /* -- Lifecycle ------------------------------------------------- */
