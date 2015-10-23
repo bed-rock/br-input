@@ -245,8 +245,8 @@
         this._setModel();
       },
 
-      _bindValue: function() {
-        this.model = Polymer.dom(this.root).querySelector('#' + this.name).value;
+      _setModel: function () {
+        this.model = this.$$( 'input' ).value;
 
         if(this.format.toUpperCase() === this.formats.MONEY)
           this.model = this.model.replace(/\./g, '').replace(',','.');
