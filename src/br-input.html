@@ -2,34 +2,33 @@
 <dom-module id="br-input">
   <script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
   <template>
-    <div class="form_field" required$="{{required}}">
-      <template is="dom-if" if="{{icon}}">
-        <br-icons icon$="{{icon}}" class="icon"></br-icons>
-      </template>
-      <label for$="{{name}}">{{label}}</label>
-      <input type$="{{brType}}"
-             id$="{{name}}"
-             autocorrect="off"
-             autocapitalize="off"
-             value$="{{model}}"
-             on-blur="_validateAndBindValue"
-             on-input='_onInput'
-             on-keydown='_onKeyDown'
-             on-focus='_activeField'
-             maxlength$="{{max}}"
-             required$="{{required}}"
-             tabindex="0"
-             ng-disabled$="{{disabled}}" >
-      <template is="dom-if" if="{{hasNotEmptyError}}">
-        <p class="form_field--error">{{notEmptyErrorMessage}}</p>
-      </template>
-      <template is="dom-if" if="{{hasMinLengthError}}">
-        <p class="form_field--error">{{minLengthErrorMessage}}</p>
-      </template>
-      <template is="dom-if" if="{{hasCustomError}}">
-        <p class="form_field--error">{{customErrorMessage}}</p>
-      </template>
-    </div>
+    <template is="dom-if" if="{{icon}}">
+      <br-icons icon$="{{icon}}" class="icon"></br-icons>
+    </template>
+    <label for$="{{name}}">{{label}}</label>
+    <input type$="{{brType}}"
+            id$="{{name}}"
+            value="{{value}}"
+            on-keydown="_onKeyDown"
+            on-focus="_activeField"
+            on-blur="_deactiveField"
+            on-change="_onChange"
+            on-input="_onInput"
+            maxlength$="{{max}}"
+            required$="{{required}}"
+            tabindex="0"
+            autocorrect="off"
+            autocapitalize="off"
+           disabled$="{{disabled}}">
+    <template is="dom-if" if="{{hasNotEmptyError}}">
+      <p class="form_field--error">{{notEmptyErrorMessage}}</p>
+    </template>
+    <template is="dom-if" if="{{hasMinLengthError}}">
+      <p class="form_field--error">{{minLengthErrorMessage}}</p>
+    </template>
+    <template is="dom-if" if="{{hasCustomError}}">
+      <p class="form_field--error">{{customErrorMessage}}</p>
+    </template>
   </template>
   <script>
     Polymer( {
@@ -81,19 +80,17 @@
         notEmptyErrorMessage: String,
         minLengthErrorMessage: String,
         customErrorMessage: String,
-        disabled: String
+        disabled: Boolean
       },
 
       /* -- Lifecycle ------------------------------------------------- */
 
       ready: function () {
-
         this.hasNotEmptyError = false;
         this.hasMinLengthError = false;
         this.hasCustomError = false;
         this.isValidForm = true;
-
-        this._setInputMask();
+        this.classList.add( 'form_field' );
       },
 
       /* -- Private Methods ------------------------------------------- */
@@ -158,8 +155,13 @@
       },
 
       _onInput: function ( e ) {
-        this._activeField();
         this._validate();
+        this._setInputMask();
+        this._setModel();
+      },
+
+      _onChange: function ( e ) {
+        this._setModel();
       },
 
       _onKeyDown: function ( e ) {
@@ -168,10 +170,13 @@
       },
 
       _activeField: function () {
-        var formField = this.$$( '.form_field' ).classList;
+        if ( !this.classList.contains( 'active' ) )
+          this.classList.add( 'active' );
+      },
 
-        if ( !formField.contains( 'active' ) )
-          formField.add( 'active' );
+      _deactiveField: function () {
+        if ( this.classList.contains( 'active' ) && !this.model )
+          this.classList.remove( 'active' );
       },
 
       _validate: function () {
@@ -180,7 +185,6 @@
       },
 
       _defaultValidation: function () {
-
         var input = this.$$( 'input' );
 
         this._validateNotEmpty( input );
@@ -190,79 +194,73 @@
       },
 
       _customValidation: function () {
-
-        var formField = this.$$( '.form_field' );
-
         if ( this.isValid === "true" ) {
           this.hasCustomError = false;
           this.isValidForm = true;
-          formField.classList.remove( 'is-invalid' );
+          this.classList.remove( 'is-invalid' );
         }
         else {
           this.hasCustomError = true;
           this.isValidForm = false;
-          formField.classList.add( 'is-invalid' );
+          this.classList.add( 'is-invalid' );
         }
       },
 
       _validateNotEmpty: function ( input ) {
-
-        var formField = this.$$( '.form_field' );
-
         if ( this.required && input.value.length === 0 ) {
           this.hasNotEmptyError = true;
           this.isValidForm = false;
-          formField.classList.add( 'is-invalid' );
+          this.classList.add( 'is-invalid' );
         }
         else {
           this.hasNotEmptyError = false;
           this.isValidForm = true;
-          formField.classList.remove( 'is-invalid' );
+          this.classList.remove( 'is-invalid' );
         }
       },
 
       _validateMinLength: function ( input ) {
-
-        var formField = this.$$( '.form_field' );
-
         if ( ( this.format.toUpperCase() === this.formats.NUMBER
           || this.format.toUpperCase() === this.formats.TEXT )
           && input.value.length < this.min ) {
           this.hasMinLengthError = true;
           this.isValidForm = false;
-          formField.classList.add( 'is-invalid' );
+          this.classList.add( 'is-invalid' );
         }
         else {
           this.hasMinLengthError = false;
           this.isValidForm = true;
-          formField.classList.remove( 'is-invalid' );
+          this.classList.remove( 'is-invalid' );
         }
-      },
-
-      _validateAndBindValue: function () {
-        this.fire('on-br-input-blur');
-        this._validate();
-        this._setModel();
       },
 
       _setModel: function () {
         this.model = this.$$( 'input' ).value;
 
-        if(this.format.toUpperCase() === this.formats.MONEY)
-          this.model = this.model.replace(/\./g, '').replace(',','.');
+        if ( this.format.toUpperCase() === this.formats.MONEY )
+          this.model = this.model.replace( /\./g, '' ).replace( ',', '.' );
       },
 
       _setValue: function () {
-        this.$$( 'input' ).value = this.model;
+        this.value = this.model;
+
+        if ( this.format.toUpperCase() === this.formats.MONEY )
+          this.value = this.model.replace( '.', '' );
+
+        this._setInputMask();
       },
 
       _modelChanged: function () {
         this.async( function () {
+
           if ( !!this.model ) {
             this._activeField();
-            this._setValue();
-            this._setInputMask();
           }
+          else if ( this.model === '' ) {
+            this._deactiveField();
+          }
+
+          this._setValue();
         } );
       }
 
