@@ -11,7 +11,7 @@
             value="{{value}}"
             on-keydown="_onKeyDown"
             on-focus="_activeField"
-            on-blur="_deactiveField"
+            on-blur="_onBlur"
             on-change="_onChange"
             on-input="_onInput"
             maxlength$="{{max}}"
@@ -179,6 +179,11 @@
           this.classList.remove( 'active' );
       },
 
+      _onBlur: function() { 
+        this.fire('on-br-input-blur');
+        _deactiveField();
+      },
+
       _validate: function () {
         this._customValidation();
         this._defaultValidation();
@@ -262,10 +267,14 @@
 
           this._setValue();
         } );
-      }
+      },
 
 
       /* -- Public Methods -------------------------------------------- */
+
+      emitEvent: function() {
+       this.fire('on-br-input-blur');
+     }
 
     } );
   </script>
