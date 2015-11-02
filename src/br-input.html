@@ -246,11 +246,12 @@
           this.model = this.model.replace( /\./g, '' ).replace( ',', '.' );
       },
 
-      _setValue: function () {
+     _setValue: function () {
         this.value = this.model;
 
-        if ( this.format.toUpperCase() === this.formats.MONEY )
-          this.value = this.model.replace( '.', '' );
+        if (this.format.toUpperCase() === this.formats.MONEY
+          && this.model.indexOf('.') === -1)
+          this.value = this.model + "00";
 
         this._setInputMask();
       },
