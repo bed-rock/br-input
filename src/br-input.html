@@ -248,6 +248,8 @@
 
      _setValue: function () {
         this.value = this.model;
+        this._validate();
+        this.fire('on-br-input-bind');
 
         if (this.format.toUpperCase() === this.formats.MONEY
           && this.model.indexOf('.') === -1)
