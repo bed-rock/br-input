@@ -1,93 +1,94 @@
 <link rel="import" type="html" href="../../br-icons/src/br-icons.html">
 <dom-module id="br-input">
-  <script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
-  <template>
-    <template is="dom-if" if="{{icon}}">
-      <br-icons icon$="{{icon}}" class="icon"></br-icons>
-    </template>
-    <label for$="{{name}}">{{label}}</label>
-    <input type$="{{brType}}"
-           id$="{{name}}"
-           value="{{value}}"
-           on-keydown="_onKeyDown"
-           on-focus="_activeField"
-           on-blur="_onBlur"
-           on-change="_onChange"
-           on-input="_onInput"
-           maxlength$="{{max}}"
-           required$="{{required}}"
-           tabindex="0"
-           autocorrect="off"
-           autocapitalize="off"
-           disabled$="{{disabled}}">
-    <template is="dom-if" if="{{hasNotEmptyError}}">
-      <p class="form_field--error">{{notEmptyErrorMessage}}</p>
-    </template>
-    <template is="dom-if" if="{{hasMinLengthError}}">
-      <p class="form_field--error">{{minLengthErrorMessage}}</p>
-    </template>
-    <template is="dom-if" if="{{hasCustomError}}">
-      <p class="form_field--error">{{customErrorMessage}}</p>
-    </template>
+<script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
+<template>
+  <template is="dom-if" if="{{icon}}">
+    <br-icons icon$="{{icon}}" class="icon"></br-icons>
   </template>
-  <script>
-    Polymer({
-      is: 'br-input',
-      properties: {
-        name: String,
-        format: {
-          type: String,
-          value: "text"
-        },
-        brType: {
-          type: String,
-          value: "text"
-        },
-        icon: String,
-        options: {
-          type: Object,
-          value: {}
-        },
-        formats: {
-          type: Object,
-          readOnly: true,
-          value: {
-            TEXT: 'TEXT',
-            NUMBER: 'NUMBER',
-            MONEY: 'MONEY',
-            DATE: 'DATE',
-            DATEMONTH: 'DATEMONTH',
-            PHONE: 'PHONE',
-            CPF: 'CPF',
-            CNPJ: 'CNPJ'
-          }
-        },
-        model: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_modelChanged'
-        },
-        required: {
-          type: Boolean,
-          value: false
-        },
-        isValid: {
-          type: String,
-          value: "true"
-        },
-        min: Number,
-        max: Number,
-        notEmptyErrorMessage: String,
-        minLengthErrorMessage: String,
-        customErrorMessage: String,
-        disabled: Boolean
+  <label for$="{{name}}">{{label}}</label>
+  <input type$="{{brType}}"
+    id$="{{name}}"
+    value="{{value}}"
+    on-keydown="_onKeyDown"
+    on-focus="_activeField"
+    on-blur="_onBlur"
+    on-change="_onChange"
+    on-input="_onInput"
+    maxlength$="{{max}}"
+    required$="{{required}}"
+    tabindex="0"
+    autocorrect="off"
+    autocapitalize="off"
+    disabled$="{{disabled}}">
+  <template is="dom-if" if="{{hasNotEmptyError}}">
+    <p class="form_field--error">{{notEmptyErrorMessage}}</p>
+  </template>
+  <template is="dom-if" if="{{hasMinLengthError}}">
+    <p class="form_field--error">{{minLengthErrorMessage}}</p>
+  </template>
+  <template is="dom-if" if="{{hasCustomError}}">
+    <p class="form_field--error">{{customErrorMessage}}</p>
+  </template>
+</template>
+<script>
+  Polymer({
+    is: 'br-input',
+    properties: {
+      name: String,
+      format: {
+        type: String,
+        value: "text"
       },
+      brType: {
+        type: String,
+        value: "text"
+      },
+      icon: String,
+      options: {
+        type: Object,
+        value: {}
+      },
+      formats: {
+        type: Object,
+        readOnly: true,
+        value: {
+          TEXT: 'TEXT',
+          NUMBER: 'NUMBER',
+          MONEY: 'MONEY',
+          DATE: 'DATE',
+          DATEMONTH: 'DATEMONTH',
+          PHONE: 'PHONE',
+          CPF: 'CPF',
+          CNPJ: 'CNPJ',
+          CEP: 'CEP'
+        }
+      },
+      model: {
+        type: String,
+        reflectToAttribute: true,
+        observer: '_modelChanged'
+      },
+      required: {
+        type: Boolean,
+        value: false
+      },
+      isValid: {
+        type: String,
+        value: "true"
+      },
+      min: Number,
+      max: Number,
+      notEmptyErrorMessage: String,
+      minLengthErrorMessage: String,
+      customErrorMessage: String,
+      disabled: Boolean
+    },
 
-      /* -- Lifecycle ------------------------------------------------- */
+    /* -- Lifecycle ------------------------------------------------- */
 
-      ready: function () {
-        this.hasNotEmptyError = false;
-        this.hasMinLengthError = false;
+    ready: function () {
+      this.hasNotEmptyError = false;
+      this.hasMinLengthError = false;
         //this.hasCustomError = false;
         if (this.required)
           this.isValidForm = false;
@@ -106,28 +107,31 @@
 
         switch (this.format.toUpperCase()) {
           case this.formats.NUMBER:
-            this._toNumber(inputName);
-            break;
+          this._toNumber(inputName);
+          break;
           case this.formats.MONEY:
-            this._toMoney(inputName, this.options);
-            break;
+          this._toMoney(inputName, this.options);
+          break;
           case this.formats.DATE:
-            this._toDate(inputName);
-            break;
+          this._toDate(inputName);
+          break;
           case this.formats.DATEMONTH:
-            this._toDateMonth(inputName);
-            break;
+          this._toDateMonth(inputName);
+          break;
           case this.formats.CPF:
-            this._toCpf(inputName);
-            break;
+          this._toCpf(inputName);
+          break;
           case this.formats.CNPJ:
-            this._toCnpj(inputName);
-            break;
+          this._toCnpj(inputName);
+          break;
           case this.formats.PHONE:
-            this._toPhone(inputName);
-            break;
+          this._toPhone(inputName);
+          break;
+          case this.formats.CEP:
+          this._toCep(inputName);
+          break;
           default:
-            break;
+          break;
         }
       },
 
@@ -157,6 +161,10 @@
 
       _toPhone: function (inputName) {
         VMasker(inputName).maskPattern("99 99999-9999");
+      },
+
+      _toCep: function (inputName) {
+        VMasker(inputName).maskPattern("99999-999");
       },
 
       //#endregion
@@ -244,57 +252,57 @@
           || this.format.toUpperCase() === this.formats.TEXT)
           && input.value.length < this.min) {
           this.hasMinLengthError = true;
-          this.isValidForm = false;
-          this.classList.add('is-invalid');
-        }
-        else {
-          this.hasMinLengthError = false;
-          this.isValidForm = true;
-          this.classList.remove('is-invalid');
-        }
-      },
-
-      _setModel: function () {
-        this.model = this.$$('input').value;
-
-        if (this.format.toUpperCase() === this.formats.MONEY)
-          this.model = this.model.replace(/\./g, '').replace(',', '.');
-      },
-
-      _setValue: function () {
-        this.value = this.model;
-
-        this.fire('on-br-input-bind');
-
-        if (this.format.toUpperCase() === this.formats.MONEY
-          && this.model.indexOf('.') === -1)
-          this.value = this.model + "00";
-
-        this._setInputMask();
-      },
-
-      _modelChanged: function () {
-        this.async(function () {
-
-          if (!!this.model) {
-            this._activeField();
-            this.isValidForm = true;
-          }
-          else if (this.model === '') {
-            this._deactiveField();
-          }
-
-          this._setValue();
-        });
-      },
-
-
-      /* -- Public Methods -------------------------------------------- */
-
-      emitEvent: function () {
-        this.fire('on-br-input-blur');
+        this.isValidForm = false;
+        this.classList.add('is-invalid');
       }
+      else {
+        this.hasMinLengthError = false;
+        this.isValidForm = true;
+        this.classList.remove('is-invalid');
+      }
+    },
 
-    });
-  </script>
+    _setModel: function () {
+      this.model = this.$$('input').value;
+
+      if (this.format.toUpperCase() === this.formats.MONEY)
+        this.model = this.model.replace(/\./g, '').replace(',', '.');
+    },
+
+    _setValue: function () {
+      this.value = this.model;
+
+      this.fire('on-br-input-bind');
+
+      if (this.format.toUpperCase() === this.formats.MONEY
+        && this.model.indexOf('.') === -1)
+        this.value = this.model + "00";
+
+      this._setInputMask();
+    },
+
+    _modelChanged: function () {
+      this.async(function () {
+
+        if (!!this.model) {
+          this._activeField();
+          this.isValidForm = true;
+        }
+        else if (this.model === '') {
+          this._deactiveField();
+        }
+
+        this._setValue();
+      });
+    },
+
+
+    /* -- Public Methods -------------------------------------------- */
+
+    emitEvent: function () {
+      this.fire('on-br-input-blur');
+    }
+
+  });
+</script>
 </dom-module>
