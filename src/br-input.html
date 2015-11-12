@@ -60,7 +60,7 @@
           PHONE: 'PHONE',
           CPF: 'CPF',
           CNPJ: 'CNPJ',
-          CEP: 'CEP'
+          ZIPCODE: 'ZIPCODE'
         }
       },
       model: {
@@ -127,8 +127,8 @@
           case this.formats.PHONE:
           this._toPhone(inputName);
           break;
-          case this.formats.CEP:
-          this._toCep(inputName);
+          case this.formats.ZIPCODE:
+          this._toZipCode(inputName);
           break;
           default:
           break;
@@ -163,7 +163,7 @@
         VMasker(inputName).maskPattern("99 99999-9999");
       },
 
-      _toCep: function (inputName) {
+      _toZipCode: function (inputName) {
         VMasker(inputName).maskPattern("99999-999");
       },
 
