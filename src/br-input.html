@@ -7,18 +7,18 @@
     </template>
     <label for$="{{name}}">{{label}}</label>
     <input type$="{{brType}}"
-            id$="{{name}}"
-            value="{{value}}"
-            on-keydown="_onKeyDown"
-            on-focus="_activeField"
-            on-blur="_onBlur"
-            on-change="_onChange"
-            on-input="_onInput"
-            maxlength$="{{max}}"
-            required$="{{required}}"
-            tabindex="0"
-            autocorrect="off"
-            autocapitalize="off"
+           id$="{{name}}"
+           value="{{value}}"
+           on-keydown="_onKeyDown"
+           on-focus="_activeField"
+           on-blur="_onBlur"
+           on-change="_onChange"
+           on-input="_onInput"
+           maxlength$="{{max}}"
+           required$="{{required}}"
+           tabindex="0"
+           autocorrect="off"
+           autocapitalize="off"
            disabled$="{{disabled}}">
     <template is="dom-if" if="{{hasNotEmptyError}}">
       <p class="form_field--error">{{notEmptyErrorMessage}}</p>
@@ -31,7 +31,7 @@
     </template>
   </template>
   <script>
-    Polymer( {
+    Polymer({
       is: 'br-input',
       properties: {
         name: String,
@@ -88,167 +88,182 @@
       ready: function () {
         this.hasNotEmptyError = false;
         this.hasMinLengthError = false;
-        this.hasCustomError = false;
-        this.isValidForm = false;
-        this.classList.add( 'form_field' );
+        //this.hasCustomError = false;
+        if (this.required)
+          this.isValidForm = false;
+        else
+          this.isValidForm = true;
+        this.classList.add('form_field');
       },
 
       /* -- Private Methods ------------------------------------------- */
 
+      //#region Masks
+
       _setInputMask: function () {
 
-        var inputName = this.$$( 'input' );
+        var inputName = this.$$('input');
 
-        switch ( this.format.toUpperCase() ) {
+        switch (this.format.toUpperCase()) {
           case this.formats.NUMBER:
-            this._toNumber( inputName );
+            this._toNumber(inputName);
             break;
           case this.formats.MONEY:
-            this._toMoney( inputName, this.options );
+            this._toMoney(inputName, this.options);
             break;
           case this.formats.DATE:
-            this._toDate( inputName );
+            this._toDate(inputName);
             break;
           case this.formats.DATEMONTH:
-            this._toDateMonth( inputName );
+            this._toDateMonth(inputName);
             break;
           case this.formats.CPF:
-            this._toCpf( inputName );
+            this._toCpf(inputName);
             break;
           case this.formats.CNPJ:
-            this._toCnpj( inputName );
+            this._toCnpj(inputName);
             break;
           case this.formats.PHONE:
-            this._toPhone( inputName );
+            this._toPhone(inputName);
             break;
           default:
             break;
         }
       },
 
-      _toNumber: function ( inputName ) {
-        VMasker( inputName ).maskNumber();
+      _toNumber: function (inputName) {
+        VMasker(inputName).maskNumber();
       },
 
-      _toMoney: function ( inputName, options ) {
-        VMasker( inputName ).maskMoney( options );
+      _toMoney: function (inputName, options) {
+        VMasker(inputName).maskMoney(options);
       },
 
-      _toDateMonth: function ( inputName ) {
-        VMasker( inputName ).maskPattern( "99/9999" );
+      _toDateMonth: function (inputName) {
+        VMasker(inputName).maskPattern("99/9999");
       },
 
-      _toDate: function ( inputName ) {
-        VMasker( inputName ).maskPattern( "99/99/9999" );
+      _toDate: function (inputName) {
+        VMasker(inputName).maskPattern("99/99/9999");
       },
 
-      _toCpf: function ( inputName ) {
-        VMasker( inputName ).maskPattern( "999.999.999-99" );
+      _toCpf: function (inputName) {
+        VMasker(inputName).maskPattern("999.999.999-99");
       },
 
-      _toCnpj: function ( inputName ) {
-        VMasker( inputName ).maskPattern( "99.999.999/9999-99" );
+      _toCnpj: function (inputName) {
+        VMasker(inputName).maskPattern("99.999.999/9999-99");
       },
 
-      _toPhone: function ( inputName ) {
-        VMasker( inputName ).maskPattern( "99 99999-9999" );
+      _toPhone: function (inputName) {
+        VMasker(inputName).maskPattern("99 99999-9999");
       },
 
-      _onInput: function ( e ) {
+      //#endregion
+
+      _onInput: function (e) {
         this._validate();
         this._setInputMask();
         this._setModel();
       },
 
-      _onChange: function ( e ) {
+      _onChange: function (e) {
         this._setModel();
       },
 
-      _onKeyDown: function ( e ) {
-        if ( e.keyCode === 13 )
+      _onKeyDown: function (e) {
+        if (e.keyCode === 13)
           this._setModel();
       },
 
       _activeField: function () {
-        if ( !this.classList.contains( 'active' ) )
-          this.classList.add( 'active' );
+        if (!this.classList.contains('active'))
+          this.classList.add('active');
       },
 
       _deactiveField: function () {
-        if ( this.classList.contains( 'active' ) && !this.model )
-          this.classList.remove( 'active' );
+        if (this.classList.contains('active') && !this.model)
+          this.classList.remove('active');
       },
 
-      _onBlur: function() { 
+      _onBlur: function () {
         this.fire('on-br-input-blur');
         this._deactiveField();
       },
 
       _validate: function () {
-        this._customValidation();
+        //this._customValidation();
         this._defaultValidation();
+
       },
 
       _defaultValidation: function () {
-        var input = this.$$( 'input' );
 
-        this._validateNotEmpty( input );
+        var input = this.$$('input');
 
-        if ( this.min !== undefined )
-          this._validateMinLength( input );
+        this._validateNotEmpty(input);
+
+        if (this.min !== undefined)
+          this._validateMinLength(input);
       },
 
-      _customValidation: function () {
-        if ( this.isValid === "true" ) {
-          this.hasCustomError = false;
+      //_customValidation: function () {
+      //  if (this.isValid === "true") {
+      //    this.hasCustomError = false;
+      //    this.isValidForm = true;
+      //    this.classList.remove('is-invalid');
+      //  }
+      //  else {
+      //    this.hasCustomError = true;
+      //    this.isValidForm = false;
+      //    this.classList.add('is-invalid');
+      //  }
+      //},
+
+      _validateNotEmpty: function (input) {
+
+        if (this.required) {          
+          if (input.value.length === 0) {
+            this.hasNotEmptyError = true;
+            this.isValidForm = false;
+            this.classList.add('is-invalid');
+          }
+          else {
+            this.hasNotEmptyError = false;
+            this.isValidForm = true;
+            this.classList.remove('is-invalid');
+          }
+
+        }
+        else
           this.isValidForm = true;
-          this.classList.remove( 'is-invalid' );
-        }
-        else {
-          this.hasCustomError = true;
-          this.isValidForm = false;
-          this.classList.add( 'is-invalid' );
-        }
       },
 
-      _validateNotEmpty: function ( input ) {
-        if ( this.required && input.value.length === 0 ) {
-          this.hasNotEmptyError = true;
-          this.isValidForm = false;
-          this.classList.add( 'is-invalid' );
-        }
-        else {
-          this.hasNotEmptyError = false;
-          this.isValidForm = true;
-          this.classList.remove( 'is-invalid' );
-        }
-      },
-
-      _validateMinLength: function ( input ) {
-        if ( ( this.format.toUpperCase() === this.formats.NUMBER
-          || this.format.toUpperCase() === this.formats.TEXT )
-          && input.value.length < this.min ) {
+      _validateMinLength: function (input) {
+        if ((this.format.toUpperCase() === this.formats.NUMBER
+          || this.format.toUpperCase() === this.formats.TEXT)
+          && input.value.length < this.min) {
           this.hasMinLengthError = true;
           this.isValidForm = false;
-          this.classList.add( 'is-invalid' );
+          this.classList.add('is-invalid');
         }
         else {
           this.hasMinLengthError = false;
           this.isValidForm = true;
-          this.classList.remove( 'is-invalid' );
+          this.classList.remove('is-invalid');
         }
       },
 
       _setModel: function () {
-        this.model = this.$$( 'input' ).value;
+        this.model = this.$$('input').value;
 
-        if ( this.format.toUpperCase() === this.formats.MONEY )
-          this.model = this.model.replace( /\./g, '' ).replace( ',', '.' );
+        if (this.format.toUpperCase() === this.formats.MONEY)
+          this.model = this.model.replace(/\./g, '').replace(',', '.');
       },
 
-     _setValue: function () {
+      _setValue: function () {
         this.value = this.model;
-        this._validate();
+
         this.fire('on-br-input-bind');
 
         if (this.format.toUpperCase() === this.formats.MONEY
@@ -259,26 +274,27 @@
       },
 
       _modelChanged: function () {
-        this.async( function () {
+        this.async(function () {
 
-          if ( !!this.model ) {
+          if (!!this.model) {
             this._activeField();
+            this.isValidForm = true;
           }
-          else if ( this.model === '' ) {
+          else if (this.model === '') {
             this._deactiveField();
           }
 
           this._setValue();
-        } );
+        });
       },
 
 
       /* -- Public Methods -------------------------------------------- */
 
-      emitEvent: function() {
-       this.fire('on-br-input-blur');
-     }
+      emitEvent: function () {
+        this.fire('on-br-input-blur');
+      }
 
-    } );
+    });
   </script>
 </dom-module>
