@@ -7,19 +7,19 @@
   </template>
   <label for$="{{name}}">{{label}}</label>
   <input type$="{{brType}}"
-    id$="{{name}}"
-    value="{{value}}"
-    on-keydown="_onKeyDown"
-    on-focus="_activeField"
-    on-blur="_onBlur"
-    on-change="_onChange"
-    on-input="_onInput"
-    maxlength$="{{max}}"
-    required$="{{required}}"
-    tabindex="0"
-    autocorrect="off"
-    autocapitalize="off"
-    disabled$="{{disabled}}">
+  id$="{{name}}"
+  value="{{value}}"
+  on-keydown="_onKeyDown"
+  on-focus="_activeField"
+  on-blur="_onBlur"
+  on-change="_onChange"
+  on-input="_onInput"
+  maxlength$="{{max}}"
+  required$="{{required}}"
+  tabindex="0"
+  autocorrect="off"
+  autocapitalize="off"
+  disabled$="{{disabled}}">
   <template is="dom-if" if="{{hasNotEmptyError}}">
     <p class="form_field--error">{{notEmptyErrorMessage}}</p>
   </template>
@@ -284,7 +284,7 @@
     _modelChanged: function () {
       this.async(function () {
 
-        if (!!this.model) {
+        if (!!this.model && this.model.indexOf('{{') === -1 ) {
           this._activeField();
           this.isValidForm = true;
         }
