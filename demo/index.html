@@ -1,63 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title></title>
-	<link rel="import" type="html" href="../../polymer/polymer.html">
-	<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
-	<link rel="stylesheet" href="../../bedrock/dist/css/style.css">
-	<link rel="import" href="../src/br-input.html">
-</head>
-<body>
+<DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>br-input example</title>
+		<link rel="stylesheet" href="../../bedrock/dist/css/style.css">
+		<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+		<link rel="import" type="html" href="../../polymer/polymer.html">
+		<link rel="import" href="../../br-form/src/br-form.html">
+		<link rel="import" href="../../br-button/src/br-button.html">
+		<link rel="import" href="../src/br-input.html">
+	</head>
+	<body>
 
-<!--
-Usage:
-Tag: <br-input>< /br-input>
-Attributes:
-	Name: String
-	Label: String
-	Model: 'SomeValue'?
-	Min, max: Defines min/max field's caracthers
-	is-valid: String true or false (why?)
-	not-empty-error-message: String
-	min-length-error-message: String
-	custom-error-message: String
-	format: text, date, datemonth, money, cpf, cnpj
-	required: Used makes the field required
--->
+		<div class="container">
+			<h1>&lt;br-input/&gt; <small>example</small></h1>
 
-	<br><br>
-	<div class="container">
-		<h1>br-input <small>example</small></h1>
-		<div class="row">
-			<div class="col-sm-4">
-				<br-input
-				name="username"
-				label="Input with icon"
-				format="money"
-				model="{{value}}"
-				not-empty-error-message="Este campo é obrigatório"
+			<br-form
+				br-id="saveForm"
+				button-id="save">
+
+			<br-input
+				name="first-name"
+				label="First name"
+				not-empty-error-message="This field is required"
 				min-length-error-message="Este campo requer um mínimo de 3 caractéres"
-				custom-error-message="Deu erro na bagaça doida"
+				custom-error-message="A custom error message"
 				required></br-input>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-4">
-				<br-input
-				name="password"
-				label="Input without icon"
-				type="password"
-				model=""
+
+			<br-input
+				name="last-name"
+				label="Last name"
 				min="3"
-				max="5"
-				not-empty-error-message="Este campo é obrigatório"
 				min-length-error-message="Este campo requer um mínimo de 3 caractéres"
-				custom-error-message="Deu erro na bagaça doida"
-				required
-				></br-input>
-			</div>
-		</div>
+				custom-error-message="A custom error message"
+				required></br-input>
+
+			<br-input
+				name="nickname"
+				label="Nickname"></br-input>
+
+			<br-button
+			id="save"
+			type="submit"
+			color="primary"
+			label="Save"></br-button>
+
+		</br-form>
+
 	</div>
+
 </body>
 </html>
