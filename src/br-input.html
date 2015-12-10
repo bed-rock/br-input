@@ -212,7 +212,7 @@
 
             this.isValidForm = input.validity.valid;
 
-            if (!this.isValidForm)
+            if (this.required)
               this._validateNotEmpty(input);
 
             if (this.min !== undefined)
