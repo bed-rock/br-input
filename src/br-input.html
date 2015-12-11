@@ -2,284 +2,280 @@
 
 <dom-module id="br-input">
 
-<script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
+  <script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
 
-<template>
+  <template>
 
-  <template is="dom-if" if="{{icon}}">
-    <br-icons icon$="{{icon}}" class="icon"></br-icons>
+    <template is="dom-if" if="{{icon}}">
+      <br-icons icon$="{{icon}}" class="icon"></br-icons>
+    </template>
+
+    <label for$="{{name}}">{{label}}</label>
+
+    <input type$="{{brType}}"
+           id$="{{name}}"
+           value="{{model::input}}"
+           on-focus="_activeField"
+           on-input="_onInput"
+           on-blur="_onBlur"
+           maxLength$="{{max}}"
+           required$="{{required}}"
+           disabled$="{{disabled}}">
+
+    <template is="dom-if" if="{{hasNotEmptyError}}">
+      <p class="form_field--error">{{notEmptyErrorMessage}}</p>
+    </template>
+
+    <template is="dom-if" if="{{hasMinLengthError}}">
+      <p class="form_field--error">{{minLengthErrorMessage}}</p>
+    </template>
+
+    <template is="dom-if" if="{{hasCustomError}}">
+      <p class="form_field--error">{{customErrorMessage}}</p>
+    </template>
+
   </template>
 
-  <label for$="{{name}}">{{label}}</label>
+  <script>
 
-  <input type$="{{brType}}"
-  id$="{{name}}"
-  value="{{model::input}}"
-  on-focus="_activeField"
-  on-blur="_onBlur"
-  on-change="_onChange"
-  on-input="_onInput"
-  maxLength$="{{max}}"
-  required$="{{required}}"
-  autocorrect="off"
-  autocapitalize="off"
-  disabled$="{{disabled}}">
-
-  <template is="dom-if" if="{{hasNotEmptyError}}">
-    <p class="form_field--error">{{notEmptyErrorMessage}}</p>
-  </template>
-
-  <template is="dom-if" if="{{hasMinLengthError}}">
-    <p class="form_field--error">{{minLengthErrorMessage}}</p>
-  </template>
-
-  <template is="dom-if" if="{{hasCustomError}}">
-    <p class="form_field--error">{{customErrorMessage}}</p>
-  </template>
-
-</template>
-
-<script>
-  Polymer({
-    is: 'br-input',
-    properties: {
-      name: String,
-      format: {
-        type: String,
-        value: "text"
+    Polymer({
+      is: 'br-input',
+      properties: {
+        name: String,
+        format: {
+          type: String,
+          value: "text"
+        },
+        brType: {
+          type: String,
+          value: "text"
+        },
+        icon: String,
+        options: {
+          type: Object,
+          value: {}
+        },
+        formats: {
+          type: Object,
+          readOnly: true,
+          value: {
+            TEXT: 'TEXT',
+            NUMBER: 'NUMBER',
+            MONEY: 'MONEY',
+            DATE: 'DATE',
+            DATEMONTH: 'DATEMONTH',
+            PHONE: 'PHONE',
+            CPF: 'CPF',
+            CNPJ: 'CNPJ',
+            ZIPCODE: 'ZIPCODE'
+          }
+        },
+        model: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_modelChanged'
+        },
+        required: {
+          type: Boolean,
+          value: false,
+          observer: '_requiredChanged'
+        },
+        isValid: {
+          type: String,
+          value: "true"
+        },
+        min: Number,
+        max: Number,
+        notEmptyErrorMessage: String,
+        minLengthErrorMessage: String,
+        customErrorMessage: String,
+        disabled: Boolean
       },
-      brType: {
-        type: String,
-        value: "text"
+
+      /* -- Lifecycle ------------------------------------------------- */
+
+      ready: function() {
+        this.classList.add('form_field');
+
+        this.hasNotEmptyError = false;
+        this.hasMinLengthError = false;
+        //this.hasCustomError = false;
       },
-      icon: String,
-      options: {
-        type: Object,
-        value: {}
-      },
-      formats: {
-        type: Object,
-        readOnly: true,
-        value: {
-          TEXT: 'TEXT',
-          NUMBER: 'NUMBER',
-          MONEY: 'MONEY',
-          DATE: 'DATE',
-          DATEMONTH: 'DATEMONTH',
-          PHONE: 'PHONE',
-          CPF: 'CPF',
-          CNPJ: 'CNPJ',
-          ZIPCODE: 'ZIPCODE'
+
+      /* -- Private Methods ------------------------------------------- */
+
+      _setInputMask: function() {
+
+        var inputName = this.$$('input');
+
+        switch (this.format.toUpperCase()) {
+          case this.formats.NUMBER:
+            this._toNumber(inputName);
+            break;
+          case this.formats.MONEY:
+            this._toMoney(inputName, this.options);
+            break;
+          case this.formats.DATE:
+            this._toDate(inputName);
+            break;
+          case this.formats.DATEMONTH:
+            this._toDateMonth(inputName);
+            break;
+          case this.formats.CPF:
+            this._toCpf(inputName);
+            break;
+          case this.formats.CNPJ:
+            this._toCnpj(inputName);
+            break;
+          case this.formats.PHONE:
+            this._toPhone(inputName);
+            break;
+          case this.formats.ZIPCODE:
+            this._toZipCode(inputName);
+            break;
+          default:
+            break;
         }
       },
-      model: {
-        type: String,
-        reflectToAttribute: true,
-        observer: '_modelChanged'
+
+      _toNumber: function(inputName) {
+        VMasker(inputName).maskNumber();
       },
-      required: {
-        type: Boolean,
-        value: false,
-        observer: '_requiredChanged'
+
+      _toMoney: function(inputName, options) {
+        VMasker(inputName).maskMoney(options);
       },
-      isValid: {
-        type: String,
-        value: "true"
+
+      _toDateMonth: function(inputName) {
+        VMasker(inputName).maskPattern("99/9999");
       },
-      min: Number,
-      max: Number,
-      notEmptyErrorMessage: String,
-      minLengthErrorMessage: String,
-      customErrorMessage: String,
-      disabled: Boolean
-    },
 
-    /* -- Lifecycle ------------------------------------------------- */
+      _toDate: function(inputName) {
+        VMasker(inputName).maskPattern("99/99/9999");
+      },
 
-    ready: function() {
-      this.classList.add('form_field');
+      _toCpf: function(inputName) {
+        VMasker(inputName).maskPattern("999.999.999-99");
+      },
 
-      this.hasNotEmptyError = false;
-      this.hasMinLengthError = false;
-      //this.hasCustomError = false;
-    },
+      _toCnpj: function(inputName) {
+        VMasker(inputName).maskPattern("99.999.999/9999-99");
+      },
 
-        /* -- Private Methods ------------------------------------------- */
+      _toPhone: function(inputName) {
+        VMasker(inputName).maskPattern("99 99999-9999");
+      },
 
-          //#region Masks
+      _toZipCode: function(inputName) {
+        VMasker(inputName).maskPattern("99999-999");
+      },
 
-          _setInputMask: function() {
+      _requiredChanged: function() {
+        this.isValidForm = !this.required;
+      },
 
-            var inputName = this.$$('input');
+      _onInput: function() {
+        this._validate();
+        this._setInputMask();
+        this.fire('br-input-on-input');
+      },
 
-            switch (this.format.toUpperCase()) {
-              case this.formats.NUMBER:
-              this._toNumber(inputName);
-              break;
-              case this.formats.MONEY:
-              this._toMoney(inputName, this.options);
-              break;
-              case this.formats.DATE:
-              this._toDate(inputName);
-              break;
-              case this.formats.DATEMONTH:
-              this._toDateMonth(inputName);
-              break;
-              case this.formats.CPF:
-              this._toCpf(inputName);
-              break;
-              case this.formats.CNPJ:
-              this._toCnpj(inputName);
-              break;
-              case this.formats.PHONE:
-              this._toPhone(inputName);
-              break;
-              case this.formats.ZIPCODE:
-              this._toZipCode(inputName);
-              break;
-              default:
-              break;
-            }
-          },
+      _activeField: function() {
+        if (!this.classList.contains('active'))
+          this.classList.add('active');
+      },
 
-          _toNumber: function(inputName) {
-            VMasker(inputName).maskNumber();
-          },
+      _deactiveField: function() {
+        if (this.classList.contains('active') && !this.model)
+          this.classList.remove('active');
+      },
 
-          _toMoney: function(inputName, options) {
-            VMasker(inputName).maskMoney(options);
-          },
+      _onBlur: function() {
+        this.fire('on-br-input-blur');
+        this._deactiveField();
+      },
 
-          _toDateMonth: function(inputName) {
-            VMasker(inputName).maskPattern("99/9999");
-          },
+      _validate: function() {
+        //this._customValidation();
+        this._defaultValidation();
+      },
 
-          _toDate: function(inputName) {
-            VMasker(inputName).maskPattern("99/99/9999");
-          },
+      _defaultValidation: function() {
 
-          _toCpf: function(inputName) {
-            VMasker(inputName).maskPattern("999.999.999-99");
-          },
+        var input = this.$$('input');
 
-          _toCnpj: function(inputName) {
-            VMasker(inputName).maskPattern("99.999.999/9999-99");
-          },
+        this.isValidForm = input.validity.valid;
 
-          _toPhone: function(inputName) {
-            VMasker(inputName).maskPattern("99 99999-9999");
-          },
+        if (this.required)
+          this._validateNotEmpty(input);
 
-          _toZipCode: function(inputName) {
-            VMasker(inputName).maskPattern("99999-999");
-          },
+        if (this.min !== undefined)
+          this._validateMinLength(input);
+      },
 
-          //#endregion
+      //_customValidation: function () {
+      //  if (this.isValid === "true") {
+      //    this.hasCustomError = false;
+      //    this.isValidForm = true;
+      //    this.classList.remove('is-invalid');
+      //  }
+      //  else {
+      //    this.hasCustomError = true;
+      //    this.isValidForm = false;
+      //    this.classList.add('is-invalid');
+      //  }
+      //},
 
-          _requiredChanged: function() {
-            this.isValidForm = !this.required;
-          },
+      _validateNotEmpty: function(input) {
 
-          _onInput: function() {
-            this._validate();
-            this._setInputMask();
-            this.fire('br-input-on-input');
-          },
+        if ( input.value.length == 0 ) {
+          this.classList.add('is-invalid');
+          this.hasNotEmptyError = true;
+        }
+        else {
+          this.classList.remove('is-invalid');
+          this.hasNotEmptyError = false;
+        }
 
-          _activeField: function() {
-            if (!this.classList.contains('active'))
-              this.classList.add('active');
-          },
+      },
 
-          _deactiveField: function() {
-            if (this.classList.contains('active') && !this.model)
-              this.classList.remove('active');
-          },
+      _validateMinLength: function(input) {
 
-          _onBlur: function() {
-            this.fire('on-br-input-blur');
-            this._deactiveField();
-          },
+        if ( ( this.format.toUpperCase() === this.formats.NUMBER || this.format.toUpperCase() === this.formats.TEXT ) && input.value.length < this.min ) {
+          this.classList.add('is-invalid');
+          this.isValidForm = false;
+          this.hasMinLengthError = true;
+        }
+        else {
+          this.classList.remove('is-invalid');
+          this.isValidForm = true;
+          this.hasMinLengthError = false;
+        }
 
-          _validate: function() {
-            //this._customValidation();
-            this._defaultValidation();
-          },
+      },
 
-          _defaultValidation: function() {
+      _modelChanged: function() {
 
-            var input = this.$$('input');
+        if ( this.model !== '' && this.model.indexOf('{{') === -1 ) {
+          this._validate();
+          this._setInputMask();
+          this._activeField();
+        }
+        else if ( this.model == '' ) {
+          this._deactiveField();
+        }
 
-            this.isValidForm = input.validity.valid;
-
-            if (this.required)
-              this._validateNotEmpty(input);
-
-            if (this.min !== undefined)
-              this._validateMinLength(input);
-          },
-
-          //_customValidation: function () {
-          //  if (this.isValid === "true") {
-          //    this.hasCustomError = false;
-          //    this.isValidForm = true;
-          //    this.classList.remove('is-invalid');
-          //  }
-          //  else {
-          //    this.hasCustomError = true;
-          //    this.isValidForm = false;
-          //    this.classList.add('is-invalid');
-          //  }
-          //},
-
-          _validateNotEmpty: function(input) {
-
-            if ( input.value.length == 0 ) {
-              this.classList.add('is-invalid');
-              this.hasNotEmptyError = true;
-            }
-            else {
-              this.classList.remove('is-invalid');
-              this.hasNotEmptyError = false;
-            }
-
-          },
-
-          _validateMinLength: function(input) {
-
-            if ( ( this.format.toUpperCase() === this.formats.NUMBER || this.format.toUpperCase() === this.formats.TEXT ) && input.value.length < this.min ) {
-              this.classList.add('is-invalid');
-              this.isValidForm = false;
-              this.hasMinLengthError = true;
-            }
-            else {
-              this.classList.remove('is-invalid');
-              this.isValidForm = true;
-              this.hasMinLengthError = false;
-            }
-
-          },
-
-          _modelChanged: function() {
-
-            if ( this.model !== '' && this.model.indexOf('{{') === -1 ) {
-              this._validate();
-              this._setInputMask();
-              this._activeField();
-            }
-            else if ( this.model == '' ) {
-              this._deactiveField();
-            }
-
-          },
+      },
 
 
-          /* -- Public Methods -------------------------------------------- */
+      /* -- Public Methods -------------------------------------------- */
 
-          emitEvent: function() {
-            this.fire('on-br-input-blur');
-          }
+      emitEvent: function() {
+        this.fire('on-br-input-blur');
+      }
 
-        });
-</script>
+    });
+
+  </script>
+
 </dom-module>
