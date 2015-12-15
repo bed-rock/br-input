@@ -95,89 +95,87 @@
       /* -- Lifecycle ------------------------------------------------- */
 
       ready: function() {
+
         this.classList.add('form_field');
+
+        this.input = this.$$('input');
 
         this.hasNotEmptyError = false;
         this.hasMinLengthError = false;
         //this.hasCustomError = false;
+
       },
 
       /* -- Private Methods ------------------------------------------- */
 
       _setInputMask: function() {
 
-        var inputName = this.$$('input');
+        var input = this.input;
 
         switch (this.format.toUpperCase()) {
           case this.formats.NUMBER:
-            this._toNumber(inputName);
+            this._toNumber(input);
             break;
           case this.formats.MONEY:
-            this._toMoney(inputName, this.options);
+            this._toMoney(input, this.options);
             break;
           case this.formats.DATE:
-            this._toDate(inputName);
+            this._toDate(input);
             break;
           case this.formats.DATEMONTH:
-            this._toDateMonth(inputName);
+            this._toDateMonth(input);
             break;
           case this.formats.CPF:
-            this._toCpf(inputName);
+            this._toCpf(input);
             break;
           case this.formats.CNPJ:
-            this._toCnpj(inputName);
+            this._toCnpj(input);
             break;
           case this.formats.PHONE:
-            this._toPhone(inputName);
+            this._toPhone(input);
             break;
           case this.formats.ZIPCODE:
-            this._toZipCode(inputName);
+            this._toZipCode(input);
             break;
           default:
             break;
         }
       },
 
-      _toNumber: function(inputName) {
-        VMasker(inputName).maskNumber();
+      _toNumber: function(input) {
+        VMasker(input).maskNumber();
       },
 
-      _toMoney: function(inputName, options) {
-        VMasker(inputName).maskMoney(options);
+      _toMoney: function(input, options) {
+        VMasker(input).maskMoney(options);
       },
 
-      _toDateMonth: function(inputName) {
-        VMasker(inputName).maskPattern("99/9999");
+      _toDateMonth: function(input) {
+        VMasker(input).maskPattern("99/9999");
       },
 
-      _toDate: function(inputName) {
-        VMasker(inputName).maskPattern("99/99/9999");
+      _toDate: function(input) {
+        VMasker(input).maskPattern("99/99/9999");
       },
 
-      _toCpf: function(inputName) {
-        VMasker(inputName).maskPattern("999.999.999-99");
+      _toCpf: function(input) {
+        VMasker(input).maskPattern("999.999.999-99");
       },
 
-      _toCnpj: function(inputName) {
-        VMasker(inputName).maskPattern("99.999.999/9999-99");
+      _toCnpj: function(input) {
+        VMasker(input).maskPattern("99.999.999/9999-99");
       },
 
-      _toPhone: function(inputName) {
-        VMasker(inputName).maskPattern("99 99999-9999");
+      _toPhone: function(input) {
+        VMasker(input).maskPattern("99 99999-9999");
       },
 
-      _toZipCode: function(inputName) {
-        VMasker(inputName).maskPattern("99999-999");
-      },
-
-      _requiredChanged: function() {
-        this.isValidForm = !this.required;
+      _toZipCode: function(input) {
+        VMasker(input).maskPattern("99999-999");
       },
 
       _onInput: function() {
-        this._validate();
-        this._setInputMask();
-        this.fire('br-input-on-input');
+        this.dirty = true;
       },
 
       _activeField: function() {
@@ -202,9 +200,13 @@
 
       _defaultValidation: function() {
 
-        var input = this.$$('input');
+        var input = this.input;
 
         this.isValidForm = input.validity.valid;
+        if ( this.isValidForm )
+          this.classList.remove('is-invalid');
+        else
+          this.classList.add('is-invalid');
 
         if (this.required)
           this._validateNotEmpty(input);
@@ -228,20 +230,18 @@
 
       _validateNotEmpty: function(input) {
 
-        if ( input.value.length == 0 ) {
-          this.classList.add('is-invalid');
+        if ( input.value.length == 0 )
           this.hasNotEmptyError = true;
-        }
-        else {
-          this.classList.remove('is-invalid');
+        else
           this.hasNotEmptyError = false;
-        }
 
       },
 
       _validateMinLength: function(input) {
 
-        if ( ( this.format.toUpperCase() === this.formats.NUMBER || this.format.toUpperCase() === this.formats.TEXT ) && input.value.length < this.min ) {
+        var format = this.format.toUpperCase();
+
+        if ( ( format === this.formats.NUMBER || format === this.formats.TEXT ) && input.value.length < this.min ) {
           this.classList.add('is-invalid');
           this.isValidForm = false;
           this.hasMinLengthError = true;
@@ -254,19 +254,34 @@
 
       },
 
+      _requiredChanged: function() {
+        this.isValidForm = !this.required;
+
+        if ( this.dirty )
+          this._validate();
+      },
+
       _modelChanged: function() {
 
-        if ( this.model !== '' && this.model.indexOf('{{') === -1 ) {
-          this._validate();
-          this._setInputMask();
-          this._activeField();
-        }
-        else if ( this.model == '' ) {
-          this._deactiveField();
+        if (this.model.indexOf('{{') === -1) {
+
+          if ( this.model !== '' ) {
+            this.dirty = true;
+            this._activeField();
+            this._setInputMask();
+          }
+          else {
+            this._deactiveField();
+          }
+
+          if ( this.dirty ) {
+            this._validate();
+            this.fire('br-input-on-input');
+          }
+
         }
 
       },
-
 
       /* -- Public Methods -------------------------------------------- */
 
@@ -276,6 +291,6 @@
 
     });
 
-  </script>
+    </script>
 
-</dom-module>
+  </dom-module>
