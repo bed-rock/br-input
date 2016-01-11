@@ -1,41 +1,31 @@
 <link rel="import" type="html" href="../../br-icons/src/br-icons.html">
-
 <dom-module id="br-input">
-
   <script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
-
   <template>
-
     <template is="dom-if" if="{{icon}}">
       <br-icons icon$="{{icon}}" class="icon"></br-icons>
     </template>
-
     <label for$="{{name}}">{{label}}</label>
-
     <input type$="{{brType}}"
            id$="{{name}}"
-           value="{{model::change}}"
+           value="{{model::input}}"
            on-focus="_activeField"
            on-input="_onInput"
+           on-change="_onChange"
            on-blur="_onBlur"
            maxLength$="{{max}}"
            required$="{{required}}"
            disabled$="{{disabled}}">
-
     <template is="dom-if" if="{{hasNotEmptyError}}">
       <p class="form_field--error">{{notEmptyErrorMessage}}</p>
     </template>
-
     <template is="dom-if" if="{{hasMinLengthError}}">
       <p class="form_field--error">{{minLengthErrorMessage}}</p>
     </template>
-
     <template is="dom-if" if="{{hasCustomError}}">
       <p class="form_field--error">{{customErrorMessage}}</p>
     </template>
-
   </template>
-
   <script>
 
     Polymer({
@@ -104,6 +94,8 @@
         this.hasMinLengthError = false;
         //this.hasCustomError = false;
 
+        this.dirty = false;
+
       },
 
       /* -- Private Methods ------------------------------------------- */
@@ -151,32 +143,46 @@
       },
 
       _toDateMonth: function(input) {
+        this.max = 7;
         VMasker(input).maskPattern("99/9999");
       },
 
       _toDate: function(input) {
+        this.max = 10;
         VMasker(input).maskPattern("99/99/9999");
       },
 
       _toCpf: function(input) {
+        this.max = 14;
         VMasker(input).maskPattern("999.999.999-99");
       },
 
       _toCnpj: function(input) {
+        this.max = 18;
         VMasker(input).maskPattern("99.999.999/9999-99");
       },
 
       _toPhone: function(input) {
+        this.max = 13;
         VMasker(input).maskPattern("99 99999-9999");
       },
 
       _toZipCode: function(input) {
+        this.max = 9;
         VMasker(input).maskPattern("99999-999");
       },
 
       _onInput: function() {
         this.dirty = true;
         this._setInputMask();
+      },
+
+      _onChange: function() {
+        if ( !this.dirty ) {
+          this.dirty = true;
+          this.model = this.input.value;
+          this._setInputMask();
+        }
       },
 
       _activeField: function() {
@@ -264,12 +270,12 @@
 
       _modelChanged: function() {
 
+        console.log('model changed');
+
         if (this.model.indexOf('{{') === -1) {
 
           if ( this.model !== '' ) {
-            this.dirty = true;
             this._activeField();
-            this._setInputMask();
           }
           else {
             this._deactiveField();
