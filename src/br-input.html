@@ -55,6 +55,7 @@
             DATE: 'DATE',
             DATEMONTH: 'DATEMONTH',
             PHONE: 'PHONE',
+            CELLPHONE: 'CELLPHONE',
             CPF: 'CPF',
             CNPJ: 'CNPJ',
             ZIPCODE: 'ZIPCODE'
@@ -126,6 +127,9 @@
           case this.formats.PHONE:
             this._toPhone(input);
             break;
+          case this.formats.CELLPHONE:
+            this._toCellPhone(input);
+            break;
           case this.formats.ZIPCODE:
             this._toZipCode(input);
             break;
@@ -163,6 +167,11 @@
       },
 
       _toPhone: function(input) {
+        this.max = 12;
+        VMasker(input).maskPattern("99 9999-9999");
+      },
+
+      _toCellPhone: function(input) {
         this.max = 13;
         VMasker(input).maskPattern("99 99999-9999");
       },
@@ -173,13 +182,11 @@
       },
 
       _onInput: function() {
-        this.dirty = true;
         this._setInputMask();
       },
 
       _onChange: function() {
         if ( !this.dirty ) {
-          this.dirty = true;
           this.model = this.input.value;
           this._setInputMask();
         }
@@ -273,7 +280,9 @@
         if (this.model.indexOf('{{') === -1) {
 
           if ( this.model !== '' ) {
+            this.dirty = true;
             this._activeField();
+            this._setInputMask();
           }
           else {
             this._deactiveField();
