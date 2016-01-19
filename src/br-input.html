@@ -273,6 +273,8 @@
 
         if ( this.dirty )
           this._validate();
+
+        this.fire('br-input-on-input');
       },
 
       _modelChanged: function() {
