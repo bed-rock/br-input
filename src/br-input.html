@@ -22,6 +22,12 @@
     <template is="dom-if" if="{{hasMinLengthError}}">
       <p class="form_field--error">{{minLengthErrorMessage}}</p>
     </template>
+    <template is="dom-if" if="{{hasCpfError}}">
+      <p class="form_field--error">{{cpfErrorMessage}}</p>
+    </template>
+    <template is="dom-if" if="{{hasCnpjError}}">
+      <p class="form_field--error">{{cnpjErrorMessage}}</p>
+    </template>
     <template is="dom-if" if="{{hasCustomError}}">
       <p class="form_field--error">{{customErrorMessage}}</p>
     </template>
@@ -79,6 +85,8 @@
         max: Number,
         notEmptyErrorMessage: String,
         minLengthErrorMessage: String,
+        cpfErrorMessage: String,
+        cnpjErrorMessage: String,
         customErrorMessage: String,
         disabled: Boolean
       },
@@ -93,6 +101,8 @@
 
         this.hasNotEmptyError = false;
         this.hasMinLengthError = false;
+        this.hasCpfError = false;
+        this.hasCnpjError = false;
         //this.hasCustomError = false;
 
         this.dirty = false;
@@ -205,6 +215,13 @@
       _onBlur: function() {
         this.fire('on-br-input-blur');
         this._deactiveField();
+
+        if ( this.format.toUpperCase() == 'CPF' )
+          this._validateCpf( this.input.value );
+
+        //TODO
+        //if ( this.format.toUpperCase() == 'CNPJ' )
+        //  this._validateCnpj(this.input.value);
       },
 
       _validate: function() {
@@ -242,7 +259,7 @@
       //  }
       //},
 
-      _validateNotEmpty: function(input) {
+      _validateNotEmpty: function( input ) {
 
         if ( input.value.length == 0 )
           this.hasNotEmptyError = true;
@@ -251,7 +268,7 @@
 
       },
 
-      _validateMinLength: function(input) {
+      _validateMinLength: function( input ) {
 
         var format = this.format.toUpperCase();
 
@@ -266,6 +283,65 @@
           this.hasMinLengthError = false;
         }
 
+      },
+
+      _validateCpf: function( cpf ) {
+
+        var cpf = cpf;
+
+        var validate = function( cpf ) {
+
+          if (!cpf) return false;
+
+          cpf = cpf.replace(/[^\d]+/g,'');
+
+          // Elimina CPFs invalidos conhecidos
+          if (cpf.length != 11 ||
+              cpf == "00000000000" ||
+              cpf == "11111111111" ||
+              cpf == "22222222222" ||
+              cpf == "33333333333" ||
+              cpf == "44444444444" ||
+              cpf == "55555555555" ||
+              cpf == "66666666666" ||
+              cpf == "77777777777" ||
+              cpf == "88888888888" ||
+              cpf == "99999999999")
+            return false;
+
+          // Valida 1o digito
+          add = 0;
+          for (i=0; i < 9; i ++)
+            add += parseInt(cpf.charAt(i)) * (10 - i);
+          rev = 11 - (add % 11);
+          if (rev == 10 || rev == 11)
+            rev = 0;
+          if (rev != parseInt(cpf.charAt(9)))
+            return false;
+
+          // Valida 2o digito
+          add = 0;
+          for (i = 0; i < 10; i ++)
+            add += parseInt(cpf.charAt(i)) * (11 - i);
+          rev = 11 - (add % 11);
+          if (rev == 10 || rev == 11)
+            rev = 0;
+          if (rev != parseInt(cpf.charAt(10)))
+            return false;
+
+          return true;
+        }
+
+        if ( validate( cpf ) ) {
+          this.hasCpfError = false;
+          this.isValidForm = true;
+          this.classList.remove('is-invalid');
+        }
+        else {
+          this.hasCpfError = true;
+          this.isValidForm = false;
+          this.classList.add('is-invalid');
+        }
       },
 
       _requiredChanged: function() {
