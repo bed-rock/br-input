@@ -379,7 +379,14 @@
 
       emitEvent: function() {
         this.fire('on-br-input-blur');
-      }
+      },
+
+      reset: function(){
+        this.dirty = false;
+        this.model = '';
+        this.isValid = true;
+        this._deactiveField();
+    },
 
     });
 
