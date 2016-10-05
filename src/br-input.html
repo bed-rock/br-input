@@ -216,7 +216,7 @@
         this.fire('on-br-input-blur');
         this._deactiveField();
 
-        if ( this.format.toUpperCase() == 'CPF' )
+        if ( this.format.toUpperCase() == 'CPF' && this.required )
           this._validateCpf( this.input.value );
 
         //TODO
