@@ -6,16 +6,8 @@
       <br-icons icon$="{{icon}}" class="icon"></br-icons>
     </template>
     <label for$="{{name}}">{{label}}</label>
-    <input type$="{{brType}}"
-           id$="{{name}}"
-           value="{{model::input}}"
-           on-focus="_activeField"
-           on-input="_onInput"
-           on-change="_onChange"
-           on-blur="_onBlur"
-           maxLength$="{{max}}"
-           required$="{{required}}"
-           disabled$="{{disabled}}">
+    <input type$="{{brType}}" id$="{{name}}" value="{{model::input}}" on-focus="_activeField" on-input="_onInput" on-change="_onChange"
+      on-blur="_onBlur" maxLength$="{{max}}" required$="{{required}}" disabled$="{{disabled}}">
     <template is="dom-if" if="{{hasNotEmptyError}}">
       <p class="form_field--error">{{notEmptyErrorMessage}}</p>
     </template>
@@ -24,6 +16,9 @@
     </template>
     <template is="dom-if" if="{{hasCpfError}}">
       <p class="form_field--error">{{cpfErrorMessage}}</p>
+    </template>
+    <template is="dom-if" if="{{hasDateError}}">
+      <p class="form_field--error">{{customErrorMessage}}</p>
     </template>
     <template is="dom-if" if="{{hasCnpjError}}">
       <p class="form_field--error">{{cnpjErrorMessage}}</p>
@@ -216,8 +211,11 @@
         this.fire('on-br-input-blur');
         this._deactiveField();
 
-        if ( this.format.toUpperCase() == 'CPF' && this.required )
+        if ( this.format.toUpperCase() == 'CPF' )
           this._validateCpf( this.input.value );
+
+        if(this.format.toUpperCase() == 'DATE')
+          this._validateDate(this.input);
 
         //TODO
         //if ( this.format.toUpperCase() == 'CNPJ' )
@@ -344,6 +342,41 @@
         }
       },
 
+      _validateDate: function(input) {
+          var expReg = /^((0[1-9]|[12]\d)\/(0[1-9]|1[0-2])|30\/(0[13-9]|1[0-2])|31\/(0[13578]|1[02]))\/(19|20)?\d{2}$/;
+          var aRet = true;
+         
+          if ((input) && (input.value.match(expReg)) && (input.value != '')) {
+            var dia = input.value.substring(0,2);
+            var mes = input.value.substring(3,5);
+            var ano = input.value.substring(6,10);
+
+            if (mes == 4 || mes == 6 || mes == 9 || mes == 11 && dia > 30) 
+              aRet = false;
+            else 
+              if ((ano % 4) != 0 && mes == 2 && dia > 28) 
+                aRet = false;
+              else
+              if ((ano%4) == 0 && mes == 2 && dia > 29)
+                aRet = false;
+            }
+            else
+              aRet = false;
+
+              if(aRet){
+                  this.hasDateError = false;
+                  this.isValidForm = true;
+                  this.classList.remove('is-invalid');
+              }
+              else {
+                this.hasDateError = true;
+                this.isValidForm = false;
+                this.classList.add('is-invalid');
+              }
+
+        
+      },
+
       _requiredChanged: function() {
         this.isValidForm = !this.required;
 
@@ -379,17 +412,10 @@
 
       emitEvent: function() {
         this.fire('on-br-input-blur');
-      },
-
-      reset: function(){
-        this.dirty = false;
-        this.model = '';
-        this.isValid = true;
-        this._deactiveField();
-    },
+      }
 
     });
 
     </script>
 
-  </dom-module>
+</dom-module>
