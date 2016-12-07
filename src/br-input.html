@@ -55,6 +55,7 @@
             MONEY: 'MONEY',
             DATE: 'DATE',
             DATEMONTH: 'DATEMONTH',
+            DATETIME: 'DATETIME',
             PHONE: 'PHONE',
             CELLPHONE: 'CELLPHONE',
             CPF: 'CPF',
@@ -123,6 +124,9 @@
           case this.formats.DATEMONTH:
             this._toDateMonth(input);
             break;
+          case this.formats.DATETIME:
+            this._toDateTime(input);
+            break;
           case this.formats.CPF:
             this._toCpf(input);
             break;
@@ -154,6 +158,11 @@
       _toDateMonth: function(input) {
         this.max = 7;
         VMasker(input).maskPattern("99/9999");
+      },
+
+      _toDateTime: function(input) {
+        this.max = 16;
+        VMasker(input).maskPattern("99/99/9999 99:99");
       },
 
       _toDate: function(input) {
