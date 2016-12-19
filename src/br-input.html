@@ -89,7 +89,7 @@
 
       /* -- Lifecycle ------------------------------------------------- */
 
-      ready: function() {
+      ready: function () {
 
         this.classList.add('form_field');
 
@@ -107,7 +107,7 @@
 
       /* -- Private Methods ------------------------------------------- */
 
-      _setInputMask: function() {
+      _setInputMask: function () {
 
         var input = this.input;
 
@@ -147,101 +147,104 @@
         }
       },
 
-      _toNumber: function(input) {
+      _toNumber: function (input) {
         VMasker(input).maskNumber();
       },
 
-      _toMoney: function(input, options) {
+      _toMoney: function (input, options) {
         VMasker(input).maskMoney(options);
       },
 
-      _toDateMonth: function(input) {
+      _toDateMonth: function (input) {
         this.max = 7;
         VMasker(input).maskPattern("99/9999");
       },
 
-      _toDateTime: function(input) {
+      _toDateTime: function (input) {
         this.max = 16;
         VMasker(input).maskPattern("99/99/9999 99:99");
       },
 
-      _toDate: function(input) {
+      _toDate: function (input) {
         this.max = 10;
         VMasker(input).maskPattern("99/99/9999");
       },
 
-      _toCpf: function(input) {
+      _toCpf: function (input) {
         this.max = 14;
         VMasker(input).maskPattern("999.999.999-99");
       },
 
-      _toCnpj: function(input) {
+      _toCnpj: function (input) {
         this.max = 18;
         VMasker(input).maskPattern("99.999.999/9999-99");
       },
 
-      _toPhone: function(input) {
+      _toPhone: function (input) {
         this.max = 13;
         VMasker(input).maskPattern("99 99999-9999");
       },
 
-      _toCellPhone: function(input) {
+      _toCellPhone: function (input) {
         this.max = 13;
         VMasker(input).maskPattern("99 99999-9999");
       },
 
-      _toZipCode: function(input) {
+      _toZipCode: function (input) {
         this.max = 9;
         VMasker(input).maskPattern("99999-999");
       },
 
-      _onInput: function() {
+      _onInput: function () {
         this._setInputMask();
       },
 
-      _onChange: function() {
-        if ( !this.dirty ) {
+      _onChange: function () {
+        if (!this.dirty) {
           this.model = this.input.value;
           this._setInputMask();
         }
       },
 
-      _activeField: function() {
+      _activeField: function () {
         if (!this.classList.contains('active'))
           this.classList.add('active');
       },
 
-      _deactiveField: function() {
+      _deactiveField: function () {
         if (this.classList.contains('active') && !this.model)
           this.classList.remove('active');
       },
 
-      _onBlur: function() {
+      _onBlur: function () {
         this.fire('on-br-input-blur');
         this._deactiveField();
 
-        if ( this.format.toUpperCase() == 'CPF' )
-          this._validateCpf( this.input.value );
+        if (this.format.toUpperCase() == 'CPF')
+          this._validateCpf(this.input.value);
 
-        if(this.format.toUpperCase() == 'DATE')
+        if (this.format.toUpperCase() == 'DATE')
           this._validateDate(this.input);
+
+        if (this.format.toUpperCase() == 'DATETIME')
+          this._validateDateTime(this.input);
 
         //TODO
         //if ( this.format.toUpperCase() == 'CNPJ' )
         //  this._validateCnpj(this.input.value);
       },
 
-      _validate: function() {
+      _validate: function () {
         //this._customValidation();
         this._defaultValidation();
       },
 
-      _defaultValidation: function() {
+      _defaultValidation: function () {
 
         var input = this.input;
 
         this.isValidForm = input.validity.valid;
-        if ( this.isValidForm )
+        if (this.isValidForm)
           this.classList.remove('is-invalid');
         else
           this.classList.add('is-invalid');
@@ -266,20 +269,20 @@
       //  }
       //},
 
-      _validateNotEmpty: function( input ) {
+      _validateNotEmpty: function (input) {
 
-        if ( input.value.length == 0 )
+        if (input.value.length == 0)
           this.hasNotEmptyError = true;
         else
           this.hasNotEmptyError = false;
 
       },
 
-      _validateMinLength: function( input ) {
+      _validateMinLength: function (input) {
 
         var format = this.format.toUpperCase();
 
-        if ( ( format === this.formats.NUMBER || format === this.formats.TEXT ) && input.value.length < this.min ) {
+        if ((format === this.formats.NUMBER || format === this.formats.TEXT) && input.value.length < this.min) {
           this.classList.add('is-invalid');
           this.isValidForm = false;
           this.hasMinLengthError = true;
@@ -292,33 +295,33 @@
 
       },
 
-      _validateCpf: function( cpf ) {
+      _validateCpf: function (cpf) {
 
         var cpf = cpf;
 
-        var validate = function( cpf ) {
+        var validate = function (cpf) {
 
           if (!cpf) return false;
 
-          cpf = cpf.replace(/[^\d]+/g,'');
+          cpf = cpf.replace(/[^\d]+/g, '');
 
           // Elimina CPFs invalidos conhecidos
           if (cpf.length != 11 ||
-              cpf == "00000000000" ||
-              cpf == "11111111111" ||
-              cpf == "22222222222" ||
-              cpf == "33333333333" ||
-              cpf == "44444444444" ||
-              cpf == "55555555555" ||
-              cpf == "66666666666" ||
-              cpf == "77777777777" ||
-              cpf == "88888888888" ||
-              cpf == "99999999999")
+            cpf == "00000000000" ||
+            cpf == "11111111111" ||
+            cpf == "22222222222" ||
+            cpf == "33333333333" ||
+            cpf == "44444444444" ||
+            cpf == "55555555555" ||
+            cpf == "66666666666" ||
+            cpf == "77777777777" ||
+            cpf == "88888888888" ||
+            cpf == "99999999999")
             return false;
 
           // Valida 1o digito
           add = 0;
-          for (i=0; i < 9; i ++)
+          for (i = 0; i < 9; i++)
             add += parseInt(cpf.charAt(i)) * (10 - i);
           rev = 11 - (add % 11);
           if (rev == 10 || rev == 11)
@@ -328,7 +331,7 @@
 
           // Valida 2o digito
           add = 0;
-          for (i = 0; i < 10; i ++)
+          for (i = 0; i < 10; i++)
             add += parseInt(cpf.charAt(i)) * (11 - i);
           rev = 11 - (add % 11);
           if (rev == 10 || rev == 11)
@@ -339,7 +342,7 @@
           return true;
         }
 
-        if ( validate( cpf ) ) {
+        if (validate(cpf)) {
           this.hasCpfError = false;
           this.isValidForm = true;
           this.classList.remove('is-invalid');
@@ -351,55 +354,95 @@
         }
       },
 
-      _validateDate: function(input) {
-          var expReg = /^((0[1-9]|[12]\d)\/(0[1-9]|1[0-2])|30\/(0[13-9]|1[0-2])|31\/(0[13578]|1[02]))\/(19|20)?\d{2}$/;
-          var aRet = true;
-         
-          if ((input) && (input.value.match(expReg)) && (input.value != '')) {
-            var dia = input.value.substring(0,2);
-            var mes = input.value.substring(3,5);
-            var ano = input.value.substring(6,10);
+      _validateDate: function (input) {
 
-            if (mes == 4 || mes == 6 || mes == 9 || mes == 11 && dia > 30) 
+        var expReg = /^((0[1-9]|[12]\d)\/(0[1-9]|1[0-2])|30\/(0[13-9]|1[0-2])|31\/(0[13578]|1[02]))\/(19|20)?\d{2}$/;
+        var aRet = true;
+
+        if ((input) && (input.value.match(expReg)) && (input.value != '')) {
+          var dia = input.value.substring(0, 2);
+          var mes = input.value.substring(3, 5);
+          var ano = input.value.substring(6, 10);
+
+          if (mes == 4 || mes == 6 || mes == 9 || mes == 11 && dia > 30)
+            aRet = false;
+          else
+            if ((ano % 4) != 0 && mes == 2 && dia > 28)
               aRet = false;
-            else 
-              if ((ano % 4) != 0 && mes == 2 && dia > 28) 
-                aRet = false;
-              else
-              if ((ano%4) == 0 && mes == 2 && dia > 29)
-                aRet = false;
-            }
             else
-              aRet = false;
+              if ((ano % 4) == 0 && mes == 2 && dia > 29)
+                aRet = false;
+        }
+        else
+          aRet = false;
 
-              if(aRet){
-                  this.hasDateError = false;
-                  this.isValidForm = true;
-                  this.classList.remove('is-invalid');
-              }
-              else {
-                this.hasDateError = true;
-                this.isValidForm = false;
-                this.classList.add('is-invalid');
-              }
+        if (aRet) {
+          this.hasDateError = false;
+          this.isValidForm = true;
+          this.classList.remove('is-invalid');
+        }
+        else {
+          this.hasDateError = true;
+          this.isValidForm = false;
+          this.classList.add('is-invalid');
+        }
 
-        
+
       },
 
-      _requiredChanged: function() {
+      _validateDateTime: function (input) {
+
+        // capture all the parts
+        var matches = input.value.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/);
+
+        if (matches === null) {
+          this.hasDateError = true;
+          this.isValidForm = false;
+          this.classList.add('is-invalid');
+
+        } else {
+          // now lets check the date sanity
+          var year = parseInt(matches[3], 10);
+          var month = parseInt(matches[2], 10) - 1; // months are 0-11
+          var day = parseInt(matches[1], 10);
+          var hour = parseInt(matches[4], 10);
+          var minute = parseInt(matches[5], 10);
+          var date = new Date(year, month, day, hour, minute);
+          if (date.getFullYear() !== year
+            || date.getMonth() != month
+            || date.getDate() !== day
+            || date.getHours() !== hour
+            || date.getMinutes() !== minute
+          ) {
+
+            this.hasDateError = true;
+            this.isValidForm = false;
+            this.classList.add('is-invalid');
+
+          } else {
+
+            this.hasDateError = false;
+            this.isValidForm = true;
+            this.classList.remove('is-invalid');
+          }
+        }
+
+      },
+
+      _requiredChanged: function () {
         this.isValidForm = !this.required;
 
-        if ( this.dirty )
+        if (this.dirty)
           this._validate();
 
         this.fire('br-input-on-input');
       },
 
-      _modelChanged: function() {
+      _modelChanged: function () {
 
         if (this.model.indexOf('{{') === -1) {
 
-          if ( this.model !== '' ) {
+          if (this.model !== '') {
             this.dirty = true;
             this._activeField();
             this._setInputMask();
@@ -408,7 +451,7 @@
             this._deactiveField();
           }
 
-          if ( this.dirty ) {
+          if (this.dirty) {
             this._validate();
             this.fire('br-input-on-input');
           }
@@ -419,12 +462,12 @@
 
       /* -- Public Methods -------------------------------------------- */
 
-      emitEvent: function() {
+      emitEvent: function () {
         this.fire('on-br-input-blur');
       }
 
     });
 
-    </script>
+  </script>
 
 </dom-module>
