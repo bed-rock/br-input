@@ -438,23 +438,23 @@
 
       _modelChanged: function () {
 
-        if (this.model.indexOf('{{') === -1) {
+        // if (this.model.indexOf('{{') === -1) {
 
-          if (this.model !== '') {
-            this.dirty = true;
-            this._activeField();
-            this._setInputMask();
-          }
-          else {
-            this._deactiveField();
-          }
-
-          if (this.dirty) {
-            this._validate();
-            this.fire('br-input-on-input');
-          }
-
+        if (this.model !== '') {
+          this.dirty = true;
+          this._activeField();
+          this._setInputMask();
         }
+        else {
+          this._deactiveField();
+        }
+
+        if (this.dirty) {
+          this._validate();
+          this.fire('br-input-on-input');
+        }
+
+        // }
 
       },
 
