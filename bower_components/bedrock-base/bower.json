@@ -1,0 +1,22 @@
+{
+  "name": "bedrock-base",
+  "version": "1.0.36",
+  "authors": [
+    "marcelo-ribeiro <marceloribeiromidia@gmail.com>",
+    "cbfranca <cleidsonbf@gmail.com>"
+  ],
+  "main": [
+    "scss/general.scss"
+  ],
+  "dependencies": {
+    "normalize.css": "~3.0.3"    
+  },
+   "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

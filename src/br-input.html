@@ -1,6 +1,6 @@
 <link rel="import" type="html" href="../../br-icons/src/br-icons.html">
 <dom-module id="br-input">
-  <script src="../../vanilla-masker/build/vanilla-masker.min.js"></script>
+  <script src="../bower_components/vanilla-masker/build/vanilla-masker.min.js"></script>
   <template>
     <template is="dom-if" if="{{icon}}">
       <br-icons icon$="{{icon}}" class="icon"></br-icons>
@@ -59,7 +59,8 @@
             CELLPHONE: 'CELLPHONE',
             CPF: 'CPF',
             CNPJ: 'CNPJ',
-            ZIPCODE: 'ZIPCODE'
+            ZIPCODE: 'ZIPCODE',
+            HIBRIDCPFCNPJ: 'HIBRIDCPFCNPJ'
           }
         },
         model: {
@@ -131,6 +132,9 @@
             break;
           case this.formats.CNPJ:
             this._toCnpj(input);
+            break;
+          case this.formats.HIBRIDCPFCNPJ:
+            this._toHibridCpfCnpj(input);
             break;
           case this.formats.PHONE:
             this._toPhone(input);
@@ -267,6 +271,21 @@
       //    this.classList.add('is-invalid');
       //  }
       //},
+
+
+      _toHibridCpfCnpj: function (input) {
+        this.max = 21;
+        this.async(() => {
+          if (input.value.length < 15) {
+            VMasker(input).maskPattern("999.999.999-999");
+          }
+          if (input.value.length >= 15) {
+            VMasker(input).unMask();
+            VMasker(input).maskPattern("99.999.999/9999-99");
+          }
+        });
+
+      },
 
       _validateNotEmpty: function (input) {
 
