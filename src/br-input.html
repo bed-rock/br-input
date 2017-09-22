@@ -266,7 +266,6 @@
 
       _toHibridCpfCnpj: function(input) {
         this.max = 21;
-        console.log('tamanho do input fora: ' + input.value.length);
         this.async(()=> {      
           if (input.value.length < 15) {
             VMasker(input).maskPattern("999.999.999-999");
