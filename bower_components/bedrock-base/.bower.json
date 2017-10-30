@@ -1,0 +1,32 @@
+{
+  "name": "bedrock-base",
+  "version": "1.0.36",
+  "authors": [
+    "marcelo-ribeiro <marceloribeiromidia@gmail.com>",
+    "cbfranca <cleidsonbf@gmail.com>"
+  ],
+  "main": [
+    "scss/general.scss"
+  ],
+  "dependencies": {
+    "normalize.css": "~3.0.3"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "https://github.com/bed-rock/bedrock",
+  "_release": "1.0.36",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.36",
+    "commit": "12662f2d57b76e96bf348d0f9989cf824a66c41f"
+  },
+  "_source": "https://github.com/bed-rock/bedrock.git",
+  "_target": "~1.0.0",
+  "_originalSource": "bedrock-base"
+}
