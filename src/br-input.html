@@ -266,7 +266,7 @@
 
       _toHibridCpfCnpj: function(input) {
         this.max = 21;
-        this.async(()=> {      
+        this.async(function() {      
           if (input.value.length < 15) {
             VMasker(input).maskPattern("999.999.999-999");
           }
