@@ -273,22 +273,24 @@
       //},
 
 
-      _toHibridCpfCnpj: function(input) {
+      _toHibridCpfCnpj: function (input) {
         this.max = 21;
         this.async(function() {      
+
           if (input.value.length < 15) {
             VMasker(input).maskPattern("999.999.999-999");
           }
-          if (input.value.length >= 15) {           
+          if (input.value.length >= 15) {
             VMasker(input).unMask();
             VMasker(input).maskPattern("99.999.999/9999-99");
           }
-        });        
+        });
 
       },
 
-      _validateNotEmpty: function( input ) {
-        
+
+      _validateNotEmpty: function( input ) {        
+
         if (input.value.length == 0)
           this.hasNotEmptyError = true;
         else
