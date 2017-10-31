@@ -26,6 +26,6 @@
   ],
   "dependencies": {
     "bedrock-base": "latest",
-    "vanilla-masker": "1.0.1"
+    "vanilla-masker": "1.0.4"
   }
 }
